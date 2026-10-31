@@ -1,0 +1,6 @@
+# Development / local mode: Odoo reachable only from THIS computer at http://localhost:8069
+services:
+  odoo:
+    ports:
+      - "127.0.0.1:8069:8069"
+    # To test from another device on your LAN, change to "8069:8069" (not for production).

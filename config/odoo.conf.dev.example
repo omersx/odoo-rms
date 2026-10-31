@@ -1,0 +1,9 @@
+; Development settings. Copied to config/odoo.conf by scripts/setup.sh dev
+[options]
+; Odoo's own addons are always included; list only your custom directory.
+addons_path = /mnt/extra-addons
+data_dir = /var/lib/odoo
+admin_passwd = __ADMIN_PASSWD__
+list_db = True
+workers = 0
+log_level = info

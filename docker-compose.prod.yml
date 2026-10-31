@@ -1,0 +1,27 @@
+# Production mode (hosted server OR always-on local store server).
+# Adds a Caddy reverse proxy that terminates HTTPS. Odoo and PostgreSQL are NOT published.
+services:
+  odoo:
+    expose:
+      - "8069"
+      - "8072"
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - odoo
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./deployment/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:

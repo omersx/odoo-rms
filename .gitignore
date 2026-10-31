@@ -1,0 +1,18 @@
+# Secrets and generated config — never commit
+.env
+.env.*
+!.env.example
+config/odoo.conf
+
+# Data and backups
+backups/
+*.dump
+*.sql
+*.sql.gz
+
+# Python / editor / OS
+__pycache__/
+*.pyc
+.venv/
+*.log
+.DS_Store

@@ -1,0 +1,15 @@
+# HTTPS reverse proxy for Odoo.
+#  - Public domain (e.g. shop.example.com) pointing at this server: Caddy obtains and renews
+#    a Let's Encrypt certificate automatically (ports 80 and 443 must be reachable).
+#  - DOMAIN=localhost (or an internal name): Caddy uses its own local CA; browsers will warn
+#    until that CA is trusted. See docs/DEPLOYMENT.md.
+# VERIFY the websocket routing against the Odoo 19 documentation for your worker settings.
+{$DOMAIN:localhost} {
+	encode zstd gzip
+
+	# Odoo's websocket/bus runs on port 8072 when workers > 0 (production config).
+	@websocket path /websocket
+	reverse_proxy @websocket odoo:8072
+
+	reverse_proxy odoo:8069
+}

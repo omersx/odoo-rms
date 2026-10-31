@@ -1,0 +1,3 @@
+# Keep Linux-executed files LF so scripts do not get CRLF from a Windows checkout.
+* text=auto
+*.sh text eol=lf

@@ -1,0 +1,24 @@
+; Production settings. Copied to config/odoo.conf by scripts/setup.sh prod
+; VERIFY worker/memory values against the Odoo 19 deployment docs and your server size.
+[options]
+addons_path = /mnt/extra-addons
+data_dir = /var/lib/odoo
+admin_passwd = __ADMIN_PASSWD__
+
+; Behind the Caddy reverse proxy
+proxy_mode = True
+
+; One database, hidden from the database manager
+list_db = False
+db_name = __DB_NAME__
+dbfilter = ^__DB_NAME__$
+
+; Multi-process mode (conservative start; tune to CPU/RAM)
+workers = 2
+max_cron_threads = 1
+limit_memory_soft = 2147483648
+limit_memory_hard = 2684354560
+limit_time_cpu = 600
+limit_time_real = 1200
+
+log_level = warn
