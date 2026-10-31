@@ -8,7 +8,7 @@
 **autonomy:** 2          <!-- owner edits: 1 = guided, 2 = standard (default), 3 = high -->
 
 ## Where we are
-- Milestone: A · Phase: 0 (Stage 0 environment + discovery) · Status: **BLOCKED at Stage 0**
+- Milestone: A · Phase: 0 (Stage 0 environment + discovery) · Status: **BLOCKED at Stage 0** (Docker WSL integration only)
 - Roadmap reference: `docs/DEVELOPMENT_ROADMAP.md` (do not copy its checklist here)
 
 ## Current task
@@ -16,6 +16,10 @@ None. Stage 0 stopped on two preflight FAILs the agent is not allowed to fix. Ph
 started; it needs a running Odoo to verify versions, module manifests, groups and offline behaviour.
 
 ## Last completed (newest first, max 8)
+- 2026-10-31: Copied the repo to `~/rms` (Linux filesystem); `git status` clean, 30 tracked files.
+  Windows copy `C:\Users\Wad Yonis\Desktop\odoo-app` kept unchanged as a backup.
+- 2026-10-31: Docker engine 29.8.0 answers on Windows, but still **not from Ubuntu** (no
+  `/var/run/docker.sock`); `wsl --terminate Ubuntu` did not fix it → WSL integration is off.
 - 2026-10-31: Read the documentation pack; inspected repo, Docker kit, `.gitignore`, OpenCode setup.
 - 2026-10-31: Ran `scripts/preflight.sh` inside WSL Ubuntu 24.04. Result: 2 FAIL, 1 WARN.
   - FAIL: project is under `/mnt/c/Users/Wad Yonis/Desktop/odoo-app` (must live in the Linux filesystem).
@@ -25,28 +29,28 @@ started; it needs a running Odoo to verify versions, module manifests, groups an
 - 2026-10-31: `git init` + initial commit of the documentation/kit baseline.
 
 ## Next action (concrete)
-Owner: follow `docs/WINDOWS_SETUP.md` §7 (manual steps in the Stage 0 report / below), then:
-1. Reopen OpenCode in `~/rms` inside Ubuntu (not `/mnt/c`).
-2. Run `scripts/preflight.sh` → expect 0 failures.
-3. Run `scripts/bootstrap.sh dev` → expect HTTP 200 at `http://localhost:8069`.
-Agent then records the printed versions/image digests in `ARCHITECTURE.md` §2 and starts Phase 0 discovery.
+Owner: Docker Desktop → Settings → Resources → **WSL integration** → enable **Ubuntu** → Apply & restart.
+Then `wsl --terminate Ubuntu` and reopen OpenCode in `~/rms` (Ubuntu), or tell the agent to continue.
+Agent then runs `scripts/preflight.sh` (expect 0 failures) and `scripts/bootstrap.sh dev` (expect HTTP
+200 at `http://localhost:8069`), records the printed versions/digests in `ARCHITECTURE.md` §2, and starts
+Phase 0 discovery.
 
 ## In-flight / uncommitted work
 None.
 
 ## Blockers and questions for the owner
-1. **Project on `/mnt/c`** — move it to `~/rms` in WSL (agent must not do this; it changes the owner's
-   workspace). Keep the Windows copy until the WSL copy is verified.
-2. **Docker Desktop WSL integration for Ubuntu is disabled** — enable it in Docker Desktop settings and
-   restart Docker; the agent cannot change Docker/WSL settings.
-3. WSL sees only 3 GB RAM (warning). Owner decides whether to raise it in `%UserProfile%\.wslconfig`.
+1. **Docker Desktop WSL integration for Ubuntu is off** (Hard stop: the agent cannot change Docker/WSL
+   settings). Evidence: engine 29.8.0 answers on Windows; no `/var/run/docker.sock` in Ubuntu;
+   `EnableIntegrationWithDefaultWslDistro=false`; distro restart did not inject the socket.
+2. WSL sees only 3 GB RAM (warning). Owner decides whether to raise it in `%UserProfile%\.wslconfig`.
 
 ## Decisions pending owner review
 None.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Host: Windows 10 22H2 (10.0.19045) · WSL2 Ubuntu 24.04.2 LTS · kernel 6.18.54.1
-- Docker CLI 29.8.0 · Compose 5.5.1 (clients verified; daemon **not** reachable from Ubuntu)
+- Project: `~/rms` (`/home/omer/rms`) in Ubuntu · Windows copy kept as backup
+- Docker CLI 29.8.0 · Compose 5.5.1 · engine 29.8.0 reachable on Windows, **not** from Ubuntu
 - Dev URL after bootstrap: http://localhost:8069 · Start: `docker compose up -d` · Logs: `docker compose logs -f odoo`
 - Test command: (fill in once verified)
 - Dev DB: `rms` · disposable test DBs: `rms_test*`
@@ -58,3 +62,4 @@ None.
 | Date | Agent/tool | What happened |
 |---|---|---|
 | 2026-10-31 | OpenCode / deepseek-v4.1-flash-free | Stage 0 preflight failed (path + Docker integration); docs/state updated, baseline committed, stopped for owner action |
+| 2026-10-31 | OpenCode / deepseek-v4.1-flash-free | Repo copied to `~/rms`; Docker engine confirmed on Windows, Ubuntu WSL integration still off; stopped for owner toggle |

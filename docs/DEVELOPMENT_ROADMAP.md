@@ -19,7 +19,7 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 # MILESTONE A — Working core
 
 ## Phase 0 — Discovery  *(gate: owner approval required)*
-- [!] Stage 0: blocked 2026-10-31 — preflight 2 FAIL (project on `/mnt/c`; Docker daemon not reachable from Ubuntu) + 1 WARN (3 GB RAM). Owner action required; see `PROJECT_STATE.md`.
+- [!] Stage 0: blocked 2026-10-31 — project moved to `~/rms`; only remaining blocker is Docker Desktop WSL integration for Ubuntu (no `/var/run/docker.sock`). WARN: 3 GB RAM. See `PROJECT_STATE.md`.
 - [ ] Inspect repo, branch, Git status, existing code and conventions.
 - [ ] Identify Odoo 19 version/revision, PostgreSQL version, config, addons paths, run/test commands.
 - [ ] Inspect available standard modules and manifests; record dependency graph.
@@ -139,6 +139,7 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 |---|---|---|---|---|
 | | Roadmap created | Not started | — | Run `INITIAL_PROMPT.md` (Phase 0) |
 | 2026-10-31 | Phase 0 / Stage 0 | Blocked | `scripts/preflight.sh` in WSL Ubuntu 24.04: 2 FAIL — (1) project under `/mnt/c/...`; (2) Docker daemon unreachable from Ubuntu, no `/var/run/docker.sock`, Docker Desktop WSL integration off. 1 WARN — 3 GB RAM. Docker CLI 29.8.0 / Compose 5.5.1 present. Stack never started; kit unverified. | Owner: move project to `~/rms`, enable Docker Desktop WSL integration for Ubuntu, re-run `scripts/preflight.sh` then `scripts/bootstrap.sh dev` |
+| 2026-10-31 | Phase 0 / Stage 0 | Blocked (narrowed) | Repo copied to `~/rms`, `git status` clean, 30 tracked files. Docker engine 29.8.0 answers on Windows; from Ubuntu still no socket after `wsl --terminate Ubuntu`; `EnableIntegrationWithDefaultWslDistro=false`. | Owner: enable WSL integration for Ubuntu in Docker Desktop, Apply & restart; then agent runs preflight + bootstrap |
 
 ## Maintenance rules
 1. Update status only after checking the real repository and test results.

@@ -13,18 +13,19 @@ Product requirements live in `RETAIL_MANAGEMENT_SPEC.md`; progress lives in `DEV
 - Enforce security on the server; preserve transaction and stock traceability.
 - Verify every dependency and API against the exact Odoo 19 source.
 
-## 2. Environment — PARTIALLY VERIFIED (Stage 0 blocked 2026-10-31)
+## 2. Environment — PARTIALLY VERIFIED (Stage 0 blocked on Docker WSL integration 2026-10-31)
 
 Only the client-side facts below were verified; **the stack has never run**, so every container-side
-value is still unverified. Evidence: `scripts/preflight.sh` run inside WSL Ubuntu (2 FAIL, 1 WARN).
+value is still unverified. Evidence: `scripts/preflight.sh` run inside WSL Ubuntu (2 FAIL, 1 WARN),
+followed by `docker version` on Windows (engine answers) and a distro restart (socket still absent).
 
 | Item | Value |
 |---|---|
 | Host OS | Windows 10 22H2 (10.0.19045) with WSL2 Ubuntu 24.04.2 LTS, kernel 6.18.54.1 |
 | **Runtime option chosen** | ☑ Docker Desktop (attempted; owner has not formally confirmed) ☐ WSL2 + Ubuntu native Odoo |
-| Project location (must be Linux filesystem, not `/mnt/c`) | **FAIL:** `/mnt/c/Users/Wad Yonis/Desktop/odoo-app`; must move to `~/rms` |
+| Project location (must be Linux filesystem, not `/mnt/c`) | **OK:** `~/rms` = `/home/omer/rms` (copy of the baseline; Windows copy kept as backup) |
 | Docker only: compose file path, Odoo image tag/digest, PostgreSQL image tag, volumes | Kit at repo root: `docker-compose.yml` + `.dev.yml`/`.prod.yml`; tags default `odoo:19.0` / `postgres:16` (**not pulled, not verified**); volumes `db-data`, `odoo-data` |
-| Docker client / daemon | CLI 29.8.0, Compose 5.5.1 verified. **Daemon NOT reachable from Ubuntu** (`/var/run/docker.sock` absent); Docker Desktop reports `EnableIntegrationWithDefaultWslDistro=false` |
+| Docker client / daemon | CLI 29.8.0, Compose 5.5.1 verified. Engine 29.8.0 answers on Windows; **NOT reachable from Ubuntu** (`/var/run/docker.sock` absent, survives distro restart); Docker Desktop reports `EnableIntegrationWithDefaultWslDistro=false` |
 | WSL2 only: Odoo checkout path, virtualenv path | Not applicable (no native install in `~`) |
 | Odoo version and source revision (commit/build) | Unknown — image never pulled |
 | Odoo source path | Not inspected; planned read-only inspection inside the container |
