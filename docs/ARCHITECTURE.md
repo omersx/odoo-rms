@@ -99,23 +99,33 @@ custom_addons/retail_management/
 **Possible later add-ons** (only with owner approval): `retail_management_purchase`,
 `retail_management_profiles`, `retail_management_inventory_only`.
 
-**Dependency verification checklist** (Phase 0 → record results here):
-1. List standard modules present in this Community build.
-2. Read their manifests and transitive dependencies.
-3. Confirm the custom add-on can depend on what it needs without pulling unwanted apps.
-4. Record the dependency graph below.
-5. Test a clean install and an upgrade on a disposable database.
+**Verification results (2026-11-01).** The image has **692 modules with a manifest**. It is
+Community-only: `account_accountant`, `web_enterprise`, `helpdesk`, `sale_subscription` and `quality`
+are absent (`mrp` is present and is Community). Manifests were read from
+`/usr/lib/python3/dist-packages/odoo/addons/*/__manifest__.py` in the running container.
 
 | Module | Present in build? | Manifest depends | Notes |
 |---|---|---|---|
-| `point_of_sale` | | | |
-| `stock` | | | |
-| `account` | | | |
-| `contacts` | | | |
-| `product` | | | |
-| `barcodes` (or equivalent) | | | |
-| POS-stock integration module(s) | | | |
-| `purchase` (extension) | | | |
+| `point_of_sale` | yes | `resource`, `stock_account`, `barcodes`, `html_editor`, `digest`, `phone_validation`, `partner_autocomplete`, `iot_base`, `google_address_autocomplete` | Pulls **Stock + Invoicing** through `stock_account` |
+| `stock` | yes | `product`, `barcodes_gs1_nomenclature`, `digest` | |
+| `account` | yes | `base_setup`, `onboarding`, `product`, `analytic`, `portal`, `digest` | "Invoicing"; full accounting UI needs `account.group_account_user` |
+| `contacts` | yes | `base`, `mail` | **Not** pulled by `point_of_sale` |
+| `product` | yes | `base`, `mail`, `uom` | |
+| `barcodes` | yes | `web` | Required by `stock` and `point_of_sale` |
+| POS–stock/account integration | yes | `stock_account` depends on `stock`, `account` | There is no separate `pos_stock`; integration lives in `point_of_sale` + `stock_account` |
+| `pos_hr` | yes | `point_of_sale`, `hr` | Employee/cashier login and `employee_id` attribution |
+| `pos_discount` | yes | `point_of_sale` | Optional discount button; no security file (no group restriction) |
+| `purchase`, `purchase_stock` | yes | `account` / `stock_account`, `purchase` | Planned extension only; not an MVP dependency |
+| `pos_restaurant`, `pos_sale`, `pos_self_order` | yes | `point_of_sale` … | Not needed for RMS |
+
+**Verified dependency chain:** `point_of_sale → stock_account → stock + account`; `stock → product`;
+`account → product`; `contacts` is independent. Installing `point_of_sale` therefore already installs
+Product, Stock and Invoicing, but not Contacts, Purchase, `pos_hr` or `pos_discount`.
+
+**Proposed custom add-on dependency:** `['point_of_sale', 'stock', 'account', 'contacts']` (the first
+three document direct use of POS/stock/account models and views; they are already transitive). Add
+`pos_hr` only if the owner chooses employee-PIN login, and `pos_discount` only if discounts are enabled.
+Do **not** depend on `purchase` in Milestone A.
 
 ## 5. Data ownership
 Standard records are the source of truth (see spec §8). Model names, relations and fields must be
@@ -140,21 +150,65 @@ Roles: Administrator, Cashier. Approach:
   posting, configuration, customer financial data.
 - Test direct RPC/ORM access as well as the UI. Individual identities; transaction attribution retained.
 
-### 6.1 Group mapping — TO VERIFY
+### 6.1 Group mapping — VERIFIED on `rms_test` (2026-11-01)
+
 | Retail role | Odoo groups / POS access | Evidence |
 |---|---|---|
-| Administrator | | |
-| Cashier | | |
+| **Administrator** | `base.group_user` · `point_of_sale.group_pos_manager` · `stock.group_stock_manager` · `product.group_product_manager` · `account.group_account_invoice` · `base.group_partner_manager` — **not** `base.group_system` by default | Group XML IDs and ACLs read from `rms_test`; `product.template` write needs `product.group_product_manager`, `stock.quant` write needs `stock.group_stock_user/manager`, `res.partner` create needs `base.group_partner_manager` |
+| **Cashier** | `base.group_user` · `point_of_sale.group_pos_user` only | Same source. Gives pos.order/payment CRUD, product/partner read, stock.move/picking write, account.move read; no product/stock/partner-manager/accounting groups |
 
-Candidate groups to check (names are unverified guesses): POS user/manager, stock user/manager,
-accounting/invoicing groups, contact-creation group, and the technical/settings group that
-Administrator should *not* automatically receive.
+Verified details and gaps (must be handled in Phase 2/4, not assumed solved):
+- A POS user's role is **manager** if they have `point_of_sale.group_pos_manager` **or**
+  `account.group_account_invoice` (`point_of_sale/models/res_users.py:26`). Never give a cashier
+  accounting groups.
+- `pos.order` and `pos.payment` ACLs give POS users **create/write/unlink**; `stock.move` and
+  `stock.picking` give create/write/unlink. Cashiers therefore need explicit server-side guards for
+  validated orders/refunds/stock changes; the ACL alone is not least privilege.
+- `point_of_sale/security/point_of_sale_security.xml` only has **multi-company** rules for POS
+  orders/sessions/configs — there is **no** "own orders only" rule. The spec's "cashier sees own
+  orders only" needs a record rule (Tier 2 decision).
+- `pos.config.restrict_price_control` ("Restrict Price Modifications to Managers") exists, but is
+  enforced **client-side only** (`static/src/app/services/pos_store.js:1400`). Server-side enforcement
+  is custom work if the spec requires it.
+- `pos.order._refund()` (`models/pos_order.py:1426`) has **no group check**; native refund permission is
+  not a POS-group restriction. Admin-only refunds require a custom server-side check.
+- Cashier contact creation is **off** by default (`res.partner` create only via
+  `base.group_partner_manager`). Native POS can still select existing customers for invoices.
+- `pos_hr` employee login: `pos.config.minimal_employee_ids` / `basic_employee_ids` /
+  `advanced_employee_ids`; POS orders get `employee_id` ("Cashier"); users with the POS manager role
+  are auto-added to `advanced_employee_ids` (`pos_hr/models/pos_config.py`). This is the mechanism for
+  per-cashier attribution and multi-cashier sessions.
+- `base.group_system` is Odoo's technical settings/administrator group. Whether day-to-day retail admin
+  can work without it must be tested in Phase 2 (menus/actions may require it). UI hiding is not security.
 
-## 7. POS architecture
-Use native POS; customize only where configuration or supported extension points cannot meet a
-requirement. Verify on the exact build: sessions, cashier/employee attribution, payment methods,
-receipts, refunds, POS-to-stock timing, offline storage/sync, and supported frontend extension APIs.
-Document offline limitations (spec §6). No separate POS engine.
+## 7. POS architecture (verified source, 2026-11-01)
+
+Native POS only. Confirmed on this build:
+
+- **App structure:** OWL app under `point_of_sale/static/src/app` — services (`app/services`),
+  models (`app/models`), components/screens. Assets are declared in the `point_of_sale._assets_pos`
+  bundle; extra assets go under `static/src` (manifest comment says no manual bundle entry needed
+  except ordering-sensitive SCSS).
+- **Extension points:** models register in `registry.category("pos_available_models")`; behaviour is
+  extended with `patch()` from `@web/core/utils/patch` (e.g. `pos_hr` patches `PosOrder`,
+  `DataServiceOptions`, `Navbar`, `Chrome`). Custom POS JS must follow this Odoo 19 pattern.
+- **Sessions/cashiers:** native sessions; `pos_hr` adds employee login and `pos.order.employee_id`;
+  session has `employee_id`; POS manager role is `point_of_sale.group_pos_manager` (see §6.1).
+- **Payments:** configured via `pos.payment.method` (cash journal minimum); no custom payment engine.
+- **Refunds:** `pos.order.refund()` → `_refund()` copies the order into the current session; no group
+  check in the method (see §6.1). Original/refund links are native.
+- **POS → stock/accounting:** handled by `point_of_sale` + `stock_account`; stock moves/pickings are
+  created on validation. Do not write quants or bypass these flows.
+- **Offline (native, limited):** browser data and state are stored in **IndexedDB**
+  (`app/services/data_service.js`, `app/models/utils/indexed_db.js`). Paid orders are kept locally and
+  tracked (`localUnsyncedPaidOrderUuids`) until confirmed synced; sync runs on reconnect. The navbar
+  shows an offline indicator; **opening a register/session while offline is refused**; product reload
+  is disabled offline; reloading while offline warns that unsaved data may be lost. There is no
+  real-time stock or order sharing between terminals. Runtime acceptance tests are Phase 8; no claims
+  beyond this source reading.
+
+**Customization rule:** configuration first. Custom POS JS only for an approved requirement, using the
+registries/`patch` above; custom restrictions on refunds/price/orders must be **server-side**.
 
 ## 8. Inventory architecture
 Use standard workflows for stock overview, receipts, movements, counts/adjustments, and (later)
@@ -174,7 +228,8 @@ change silently.
 
 The repository includes a Docker kit used for **local development, a local store server, and a hosted
 server** (`docker-compose.yml` + `.dev.yml`/`.prod.yml`, `deployment/Caddyfile`, `scripts/`); see
-`DEPLOYMENT.md`. The kit is **unverified until run** — record the result of the first real run here.
+`DEPLOYMENT.md`. The **dev mode** of the kit was run on 2026-11-01 and works (`http://localhost:8069`);
+the prod modes (Caddy/TLS, backup/restore, hosted server) remain unverified until Phase 8.
 
 Production checklist: confirm Odoo build/revision and PostgreSQL compatibility; configure `addons_path`;
 install verified dependencies and the custom add-on; configure company, currency, taxes, warehouse,
@@ -184,20 +239,33 @@ scanners on target hardware; documented upgrade and rollback; no secrets or prod
 ## 10. Decisions to validate
 | Decision | Direction | Status | Evidence / date |
 |---|---|---|---|
-| POS engine | Native Odoo POS | Unverified | |
-| Inventory source | Native Stock | Unverified | |
-| Invoice source | Native accounting | Unverified | |
-| Custom code | Isolated add-ons | Unverified | |
-| Administrator ≠ technical superuser | Separate where possible | Unverified | |
-| Offline | Native POS only | Unverified | |
-| Deployment kit (Compose + Caddy) | Same kit for dev, local server, hosted server | Syntax-checked only; not yet run | |
-| Dev runtime | Docker Desktop **or** WSL2 native (owner chooses; Docker Desktop recommended if already installed) | Undecided | |
-| Inventory-only profile | Future option | Unverified | |
-| Purchasing | Extension | Unverified | |
+| POS engine | Native Odoo POS | Verified | Source + running image, 2026-11-01 |
+| Inventory source | Native Stock | Verified | `stock` installed with POS via `stock_account` |
+| Invoice source | Native accounting | Verified | `account` installed with POS via `stock_account` |
+| Custom code | Isolated add-ons | Unverified | Tested in Phase 1 |
+| Administrator ≠ technical superuser | Separate where possible | Unverified | Test in Phase 2 (settings menus may need `base.group_system`) |
+| Offline | Native POS only | Verified on paper | IndexedDB + sync + offline guards, 2026-11-01; runtime test Phase 8 |
+| Deployment kit (Compose + Caddy) | Same kit for dev, local server, hosted server | Dev verified; prod not run | 2026-11-01 dev stack |
+| Dev runtime | Docker Desktop | Verified | WSL integration enabled 2026-11-01 |
+| Inventory-only profile | Future option | Unverified | Needs dependency validation |
+| Purchasing | Extension | Present, not used | `purchase` + `purchase_stock` in build |
 
 ## 11. Decision log
 All decisions are recorded in `DECISIONS.md` (with tiers, alternatives and evidence). Summarize only
 verified, lasting architecture facts here and reference the decision ID.
 
 ## 12. Known risks and open questions
-(Agent maintains this list; remove items when resolved.)
+
+1. **Cashier ACL breadth** (Phase 2): `point_of_sale.group_pos_user` allows full CRUD on `pos.order`
+   and `pos.payment`, and create/write on `stock.move`/`stock.picking`, plus read on `account.move`.
+   Needs server-side guards/record rules; do not assume the UI prevents it.
+2. **No own-orders record rule** for POS: cashiers can read all POS orders of the company by default.
+   A rule is required for the spec's "own orders only" (Tier 2).
+3. **Refunds and price overrides** have no server-side group check (`_refund()`; client-side
+   `restrict_price_control`). Custom checks are required for admin-only approval.
+4. **Docker Hub geo-block** (D-001): dev images come from `mirror.gcr.io`. Production deployment in this
+   country needs a VPN/proxy or an approved mirror; plan this before Phase 8.
+5. **WSL memory**: 3 GB visible; installs/tests are slow and may hit memory limits. 8 GB recommended.
+6. **Community scope**: no Enterprise modules (`account_accountant`, `web_enterprise`, etc.). Confirm
+   that the required invoicing/reporting features exist in Community before Milestone B.
+7. **Empty `custom_addons/`**: Odoo skips the addons path until it contains a module (expected; Phase 1).

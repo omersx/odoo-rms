@@ -20,16 +20,16 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 
 ## Phase 0 — Discovery  *(gate: owner approval required)*
 - [x] Stage 0: preflight 0 failures (2026-11-01); `docker compose up -d` serves HTTP 200; facts recorded in `ARCHITECTURE.md` §2; kit fixed (`--without-demo`) and geo-block documented.
-- [ ] Inspect repo, branch, Git status, existing code and conventions.
-- [ ] Identify Odoo 19 version/revision, PostgreSQL version, config, addons paths, run/test commands.
-- [ ] Inspect available standard modules and manifests; record dependency graph.
-- [ ] Verify security groups, POS employee/cashier access, POS extension APIs.
-- [ ] Verify native POS offline capability on paper (testing happens in Phase 8).
-- [ ] Inspect OpenCode setup and any installed tools; do not duplicate or assume integration.
-- [ ] Fill `ARCHITECTURE.md` §2, §4, §6.1; list what needs configuration vs custom code.
-- [x] Owner chooses the dev runtime: Docker Desktop, WSL integration enabled 2026-11-01; environment checklist in `WINDOWS_SETUP.md` §5 passes except disposable DB/test command (Phase 1).
-- [ ] Review the Docker kit (compose files, configs, scripts) against the real Odoo 19 image; record fixes.
-- [ ] Owner confirms scope and open decisions.
+- [x] Inspect repo, branch, Git status, existing code and conventions: empty `custom_addons/`, local `main`, no remote.
+- [x] Identify Odoo 19 version/revision (`19.0-20261015`), PostgreSQL 16.15, Python 3.12.3, addons paths, run commands. Test command identified; first real run in Phase 1.
+- [x] Inspect standard modules/manifests on the image: 692 modules, Community-only; dependency graph in `ARCHITECTURE.md` §4.
+- [x] Verify security groups, POS employee access (`pos_hr`), POS extension APIs (registries + `patch`, `_assets_pos`) on `rms_test`.
+- [x] Verify native POS offline capability on paper: IndexedDB, unsynced-order tracking, offline guards; runtime test Phase 8.
+- [x] Inspect OpenCode setup and tools: 1.19.1; superpowers/ponytail plugins; no Odoo-specific tools.
+- [x] Fill `ARCHITECTURE.md` §2, §4, §6.1; configuration vs custom code listed.
+- [x] Owner chooses the dev runtime: Docker Desktop, WSL integration enabled 2026-11-01; environment checklist in `WINDOWS_SETUP.md` §5 passes except disposable test run (Phase 1).
+- [x] Review the Docker kit against the real Odoo 19 image: dev stack verified; `--without-demo` fixed; geo-block workaround documented (D-001).
+- [ ] Owner confirms scope and open decisions (Phase 0 gate).
 
 **Exit:** versions and dependencies verified; blockers and open questions documented.
 
@@ -141,6 +141,7 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 | 2026-10-31 | Phase 0 / Stage 0 | Blocked | `scripts/preflight.sh` in WSL Ubuntu 24.04: 2 FAIL — (1) project under `/mnt/c/...`; (2) Docker daemon unreachable from Ubuntu, no `/var/run/docker.sock`, Docker Desktop WSL integration off. 1 WARN — 3 GB RAM. Docker CLI 29.8.0 / Compose 5.5.1 present. Stack never started; kit unverified. | Owner: move project to `~/rms`, enable Docker Desktop WSL integration for Ubuntu, re-run `scripts/preflight.sh` then `scripts/bootstrap.sh dev` |
 | 2026-10-31 | Phase 0 / Stage 0 | Blocked (narrowed) | Repo copied to `~/rms`, `git status` clean, 30 tracked files. Docker engine 29.8.0 answers on Windows; from Ubuntu still no socket after `wsl --terminate Ubuntu`; `EnableIntegrationWithDefaultWslDistro=false`. | Owner: enable WSL integration for Ubuntu in Docker Desktop, Apply & restart; then agent runs preflight + bootstrap |
 | 2026-11-01 | Phase 0 / Stage 0 | Done | Preflight 0 failures. Docker Hub CDN geo-blocked (CloudFront 403); images pulled from `mirror.gcr.io` with identical digests (D-001). Odoo `19.0-20261015`, PostgreSQL 16.15, Python 3.12.3. `rms` DB created (base, no demo); `http://localhost:8069/web/login` HTTP 200. `--without-demo=all` fixed to `--without-demo`. | Phase 0 discovery: module manifests, groups, POS offline, extension points |
+| 2026-11-01 | Phase 0 / discovery | Done — gate | `rms_test` created with `point_of_sale,pos_hr,contacts` (67 modules). 692 modules with manifests, Community-only. Dependencies recorded (§4). Real groups + ACLs recorded (§6.1): cashier gaps identified. POS offline = IndexedDB + unsynced-order tracking; POS extension = `pos_available_models` registry + `patch` + `_assets_pos`. | Owner: review report and approve Milestone A plan (Phase 1–4) |
 
 ## Maintenance rules
 1. Update status only after checking the real repository and test results.
