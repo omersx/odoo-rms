@@ -29,16 +29,16 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 - [x] Fill `ARCHITECTURE.md` §2, §4, §6.1; configuration vs custom code listed.
 - [x] Owner chooses the dev runtime: Docker Desktop, WSL integration enabled 2026-11-01; environment checklist in `WINDOWS_SETUP.md` §5 passes except disposable test run (Phase 1).
 - [x] Review the Docker kit against the real Odoo 19 image: dev stack verified; `--without-demo` fixed; geo-block workaround documented (D-001).
-- [ ] Owner confirms scope and open decisions (Phase 0 gate).
+- [x] Owner confirms scope and open decisions (Phase 0 gate): approved 2026-11-01, questions delegated to the agent (D-002…D-005).
 
 **Exit:** versions and dependencies verified; blockers and open questions documented.
 
 ## Phase 1 — Minimal custom module
-- [ ] Create `retail_management` with a manifest containing only verified, required dependencies.
-- [ ] Add the Retail Management menu/workspace linking to standard Odoo actions.
-- [ ] Clean install and upgrade on a disposable database; note uninstall implications.
+- [x] Create `retail_management` with a manifest containing only verified, required dependencies: `point_of_sale, stock, account, contacts` (D-002, D-003).
+- [x] Add the Retail Management menu/workspace linking to standard Odoo actions (`views/retail_menu.xml`, six items, verified visibility per group).
+- [x] Clean install (`rms_test2`, `-i retail_management`, 60 modules) and upgrade (`-u`) on a disposable database; uninstall leaves **0** XML IDs and 0 menus. Uninstall implications: menus only, no data loss.
 
-- [ ] *(Optional)* Trial an external static review tool on `retail_management` per `OPTIONAL_TOOLS.md` §2; record the decision.
+- [ ] *(Optional)* Trial an external static review tool on `retail_management` per `OPTIONAL_TOOLS.md` §2; record the decision. — Skipped in Phase 1: 3 files and ~30 lines of XML, nothing a linter would catch. Revisit when Python logic lands in Phase 2.
 
 **Exit:** clean install/upgrade; no duplicated Odoo logic; no server errors.
 

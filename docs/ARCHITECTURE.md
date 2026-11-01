@@ -76,25 +76,39 @@ Conceptual only. Exact module names and dependencies are recorded in §4 once ve
 
 ## 4. Module strategy and verified dependencies
 
-**Core add-on (proposed):** `retail_management`
+**Core add-on (created 2026-11-01):** `retail_management`
 - Provides the Retail Management menu/workspace, dashboard entry points, role/group mapping, and
   minimal retail configuration or presentation extensions.
 - Does **not** reimplement products, stock, POS, invoices, payments or accounting.
 - Add models only after a verified gap; add POS JS/OWL only for an approved requirement, following
   Odoo 19 patterns (not copied from older versions).
 
-**Suggested layout** (create only the files actually needed):
+**Current content (Phase 1):** `__manifest__.py`, `__init__.py`, `views/retail_menu.xml`. No models,
+no security files yet (Phase 2).
+
 ```text
 custom_addons/retail_management/
-├── __init__.py
-├── __manifest__.py
-├── models/            # only if a verified gap exists
-├── views/             # menus, actions, settings views
-├── security/          # groups, ir.model.access.csv, record rules
-├── data/
-├── static/description/icon.png
-└── tests/
+├── __init__.py            # comment only; Python models added when a gap is verified
+├── __manifest__.py        # depends: point_of_sale, stock, account, contacts
+└── views/retail_menu.xml  # Retail Management menu → native actions
 ```
+
+**Workspace menus (verified on `rms_test2`)** — every item points at a native action, so no logic is
+duplicated and native ACLs still apply:
+
+| Menu | Native action | Groups on the item |
+|---|---|---|
+| Point of Sale | `point_of_sale.action_pos_config_kanban` (register list → Open) | `point_of_sale.group_pos_user,group_pos_manager` |
+| Products | `stock.product_template_action_product` | none (native ACL: cashiers get read only) |
+| Inventory | `stock.action_view_quants` (server action → quants) | `stock.group_stock_user` |
+| Invoicing | `account.action_move_out_invoice` | `account.group_account_invoice` |
+| Customers | `contacts.action_contacts` | `base.group_partner_manager` |
+| Settings | `point_of_sale.action_pos_configuration` | `point_of_sale.group_pos_manager` |
+
+Verified menu visibility (`ir.ui.menu._visible_menu_ids`): cashier (`group_pos_user`) sees **Point of
+Sale + Products** (read-only); the mapped Administrator groups see **all but Settings**. Settings stays
+hidden because `res.config.settings` needs `base.group_system` — this is the Phase 2 decision on
+Administrator vs technical superuser (see §6.1 and risk 6).
 
 **Possible later add-ons** (only with owner approval): `retail_management_purchase`,
 `retail_management_profiles`, `retail_management_inventory_only`.
@@ -122,10 +136,11 @@ are absent (`mrp` is present and is Community). Manifests were read from
 `account → product`; `contacts` is independent. Installing `point_of_sale` therefore already installs
 Product, Stock and Invoicing, but not Contacts, Purchase, `pos_hr` or `pos_discount`.
 
-**Proposed custom add-on dependency:** `['point_of_sale', 'stock', 'account', 'contacts']` (the first
-three document direct use of POS/stock/account models and views; they are already transitive). Add
-`pos_hr` only if the owner chooses employee-PIN login, and `pos_discount` only if discounts are enabled.
-Do **not** depend on `purchase` in Milestone A.
+**Custom add-on dependency:** `['point_of_sale', 'stock', 'account', 'contacts']` (the first three
+document direct use of POS/stock/account models and views; they are already transitive). Owner
+delegated the open choices (2026-11-01): no `pos_hr` (cashier identity = own Odoo user, which already
+gives `pos.order.user_id`), no `pos_discount` (no discount button in Milestone A), no `purchase`.
+See D-002 and D-003.
 
 ## 5. Data ownership
 Standard records are the source of truth (see spec §8). Model names, relations and fields must be

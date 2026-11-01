@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Retail workspace: links to native Odoo actions, owns no logic of its own. -->
+    <menuitem id="menu_retail_root" name="Retail Management" sequence="45"/>
+
+    <menuitem id="menu_retail_pos"
+              name="Point of Sale"
+              parent="menu_retail_root"
+              action="point_of_sale.action_pos_config_kanban"
+              groups="point_of_sale.group_pos_user,point_of_sale.group_pos_manager"
+              sequence="10"/>
+
+    <menuitem id="menu_retail_products"
+              name="Products"
+              parent="menu_retail_root"
+              action="stock.product_template_action_product"
+              sequence="20"/>
+
+    <menuitem id="menu_retail_inventory"
+              name="Inventory"
+              parent="menu_retail_root"
+              action="stock.action_view_quants"
+              groups="stock.group_stock_user"
+              sequence="30"/>
+
+    <menuitem id="menu_retail_invoicing"
+              name="Invoicing"
+              parent="menu_retail_root"
+              action="account.action_move_out_invoice"
+              groups="account.group_account_invoice"
+              sequence="40"/>
+
+    <menuitem id="menu_retail_customers"
+              name="Customers"
+              parent="menu_retail_root"
+              action="contacts.action_contacts"
+              groups="base.group_partner_manager"
+              sequence="50"/>
+
+    <menuitem id="menu_retail_settings"
+              name="Settings"
+              parent="menu_retail_root"
+              action="point_of_sale.action_pos_configuration"
+              groups="point_of_sale.group_pos_manager"
+              sequence="90"/>
+</odoo>
