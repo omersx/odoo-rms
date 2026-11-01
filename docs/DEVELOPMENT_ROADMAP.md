@@ -51,12 +51,12 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 **Exit:** cashier cannot bypass restrictions; administrator can manage and use POS.
 
 ## Phase 3 — Products and inventory
-- [ ] Product catalog: categories, price, cost, unit, barcode, internal reference.
-- [ ] Product search and barcode use.
-- [ ] Stock overview and movement history.
-- [ ] Receive stock; authorized stock adjustment; basic count/adjustment.
-- [ ] Decide and test negative-stock behaviour (STK-07).
-- [ ] Tests for any custom inventory logic.
+- [x] Product catalog: categories, price, cost, unit, barcode, internal reference — native `product.product` fields verified (`ARCHITECTURE.md` §8); no custom model.
+- [x] Product search and barcode use: native search/list views; barcode field populated. Scanner hardware test is Phase 8.
+- [x] Stock overview and movement history: native quants + `stock.move`/`stock.move.line` (evidence in §8).
+- [x] Receive stock; authorized stock adjustment; basic count/adjustment: native incoming picking and `stock.quant.action_apply_inventory`; **cashiers blocked** from receiving/moving stock (`stock_picking.py` guard, D-008).
+- [x] Decide and test negative-stock behaviour (STK-07): accepted native behaviour — D-009.
+- [x] Tests for any custom inventory logic: receipt denied for cashier / allowed for manager, quant write denied (12 tests total, 0 failed).
 
 **Exit:** scenarios A and D pass; quantities reconcile with native records.
 

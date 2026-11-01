@@ -1,6 +1,6 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "RMS",
     "license": "LGPL-3",

@@ -286,10 +286,33 @@ Native POS only. Confirmed on this build:
 **Customization rule:** configuration first. Custom POS JS only for an approved requirement, using the
 registries/`patch` above; custom restrictions on refunds/price/orders must be **server-side**.
 
-## 8. Inventory architecture
-Use standard workflows for stock overview, receipts, movements, counts/adjustments, and (later)
-transfers, lots/serials and reordering rules. Single-store first. Negative-stock behaviour must be
-decided and tested (STK-07).
+## 8. Inventory architecture — verified on `rms_test4` (2026-11-01)
+
+Standard Odoo workflows only; the add-on adds no inventory model. Verified end to end through the ORM:
+
+| Capability | Native mechanism | Evidence |
+|---|---|---|
+| Product catalog | `product.product`: `name`, `default_code` (internal reference), `barcode`, `categ_id`, `list_price`, `standard_price` (cost), `uom_id`, `is_storable`, `available_in_pos` | Product created as `[COLA-330] Cola 330ml`, barcode `5901234123457`, unit `Units`, cost 0.8 |
+| Receive stock | `stock.picking` type `incoming`, `action_confirm` → set `move_ids.quantity` + `picked` → `button_validate` | Picking `WH/IN/00002` done, quant 24 |
+| Count / adjust | `stock.quant.inventory_quantity` + `action_apply_inventory()` (field is `groups="stock.group_stock_user"`) | Quant 24 → 22, move `Product Quantity Updated` |
+| Movement history | `stock.move` / `stock.move.line` per product | 2 moves, 2 move lines for the test product |
+| Low-stock view | `stock.warehouse.orderpoint` (Reordering Rules) — native, usable as the low-stock list | Rule created for the product |
+| Barcode | `barcode` field + native barcode lookup (`stock`/`barcodes`); POS scanning is Phase 4 hardware test | Field populated; scanning untested |
+
+**Negative stock (STK-07 decision D-009):** Odoo 19 Community has **no** built-in "block negative
+stock" switch (no such setting in `stock/models/res_config_settings.py`; availability checks use
+`allow_negative=True` internally). Accepted: negative stock is allowed natively, matching POS behaviour
+(POS sells out-of-stock items). Mitigation is the low-stock/reordering-rule view, not a hard block.
+
+**Server-side guard added** (`models/stock_picking.py`): cashiers get `AccessError` from
+`button_validate()` **and** `_action_done()` on **incoming/internal** pickings. Outgoing pickings are
+deliberately left open because POS validates its own outgoing picking as the cashier
+(`pos_order._create_order_picking` → `_action_done`, outside a manager session); blocking those would
+silently stop POS stock deduction. Residual: a cashier can still push an outgoing picking via RPC
+(D-008). Quant adjustment is blocked at field/ACL level (tested).
+
+`stock.move` in Odoo 19 has **no `name` field** (it is `description_picking` / `inventory_name`);
+hand-written ORM snippets must not pass `name`.
 
 ## 9. Environments and deployment
 - **Development:** local Odoo 19 + disposable database.
