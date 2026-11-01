@@ -172,7 +172,68 @@ Roles: Administrator, Cashier. Approach:
 | **Administrator** | `base.group_user` · `point_of_sale.group_pos_manager` · `stock.group_stock_manager` · `product.group_product_manager` · `account.group_account_invoice` · `base.group_partner_manager` — **not** `base.group_system` by default | Group XML IDs and ACLs read from `rms_test`; `product.template` write needs `product.group_product_manager`, `stock.quant` write needs `stock.group_stock_user/manager`, `res.partner` create needs `base.group_partner_manager` |
 | **Cashier** | `base.group_user` · `point_of_sale.group_pos_user` only | Same source. Gives pos.order/payment CRUD, product/partner read, stock.move/picking write, account.move read; no product/stock/partner-manager/accounting groups |
 
-Verified details and gaps (must be handled in Phase 2/4, not assumed solved):
+### 6.2 Retail roles as implemented (Phase 2, verified on `rms_test4`)
+
+| Retail role | XML ID | Implied group IDs |
+|---|---|---|
+| **Retail Cashier** | `retail_management.group_retail_cashier` | `base.group_user`, `point_of_sale.group_pos_user` |
+| **Retail Manager** | `retail_management.group_retail_manager` | `group_retail_cashier`, `point_of_sale.group_pos_manager`, `stock.group_stock_manager`, `product.group_product_manager`, `account.group_account_invoice`, `base.group_partner_manager` |
+
+Deliberately absent: `base.group_system` (Odoo technical/settings superuser). Consequence: the Settings
+menu and `res.config.settings` remain hidden from Retail Managers. Phase 2 follow-up recorded in risk 6.
+
+**Server-side enforcement added** (`models/pos_order.py`):
+- `pos.order._refund()` raises `AccessError` for non-managers — covers the backend "Return Products".
+- `pos.order.line.create()/write()` raise `AccessError` when `qty < 0` for non-managers — this is the
+  real enforcement point, because POS-frontend refunds are created client-side and pushed through
+  `pos.order.create_from_ui` → `_process_order` → order/line creation. A negative quantity is the POS
+  way to record a refund.
+
+**Verified tests** (`tests/test_security.py`, 10 tests, run with
+`-d rms_test4 -u retail_management --test-enable --test-tags /retail_management`):
+cashier denied product creation, quant writes, contact creation, refund line, backend refund and
+self-promotion to manager; cashier allowed to read products and to create normal (positive) sale lines;
+manager allowed to refund and create products. Result: **0 failed, 0 errors**.
+
+**Deferred to a decision (D-006):** the "cashier sees only own POS orders" record rule is **not**
+implemented. A read rule on `pos.order` would filter `pos.session.order_ids` for non-sudo computations
+(`pos_session.py` lines 246, 268, 391, 1736 use `order_ids` without `sudo`), so a cashier closing a
+session would compute wrong totals and cash differences. Money correctness beats a cosmetic privacy
+rule until a session-scoped rule is designed and tested in Phase 4.
+
+**Known residual limitation (D-007):** `pos.config.restrict_price_control` ("Restrict Price
+Modifications to Managers") is enforced **client-side only** (`pos_store.js:1400`). Price override by a
+cashier is therefore not blocked server-side in Milestone A; enabling the config flag is the mitigation.
+A server guard on `price_unit` is fragile (pricelists, taxes, rounding) and is deferred.
+
+### 6.3 Permission matrix — reality check (Phase 2, 2026-11-01)
+
+Status legend: **Enforced** = blocked/allowed at model level and covered by a test · **Config** = Odoo
+setting, client-side or admin-gated by native ACL only · **Gap** = documented residual risk (decision
+ID) · **B** = Milestone B.
+
+| Function (spec §3) | Administrator | Cashier | Status |
+|---|---|---|---|
+| Use POS | yes | yes | Enforced (native POS user/manager ACLs) |
+| Open/close POS session | yes | yes by default | Config — native POS allows a POS user to close a session; "configurable" is not implemented |
+| View own POS orders | yes | yes | Enforced (native ACL) |
+| View all POS orders | yes | **yes (gap)** | Gap — D-006, deferred to Phase 4 |
+| Create/edit products | yes | no | Enforced (tested `AccessError`) |
+| View product info in POS | yes | yes | Enforced (tested read allowed) |
+| Receive/adjust stock | yes | no | Enforced (tested quant write denied) |
+| View stock quantities | yes | no | Enforced — cashier lacks `stock.group_stock_user`, Inventory menu hidden |
+| Search/select customers in POS | yes | yes | Enforced (native partner read in POS) |
+| Create/edit customers | yes | no | Enforced (tested `AccessError`) — D-004 |
+| Manage customer tags/groups | yes | no | Config — native `res.partner.category` ACLs, **not yet tested** |
+| View purchase history / insights | yes | limited if enabled | B |
+| View customer balance / invoice details | yes | **readable via ACL (gap)** | Gap — POS ACL grants cashier read on `account.move`; no menu, but direct RPC is possible. Tighten in Phase 4 |
+| Create invoice from POS | yes | only if enabled | Config — POS `to_invoice` + accounting groups |
+| Manage invoices / accounting | yes | no | Enforced for UI (Invoicing menu hidden); ACL read gap above |
+| Approve refunds | yes | no | Enforced (tested: backend refund and negative line denied) — D-007 |
+| Normal discount | yes | limited by policy | Not offered in Milestone A — D-003 |
+| Exceptional discount / price override | yes | no | Config only — `restrict_price_control` is client-side; Gap D-007 |
+| View reports | all | own/limited | B |
+| Manage users / settings | yes | no | Enforced — no `base.group_system`; tested that a cashier cannot add themselves to Retail Manager |Verified details and gaps (must be handled in Phase 2/4, not assumed solved):
 - A POS user's role is **manager** if they have `point_of_sale.group_pos_manager` **or**
   `account.group_account_invoice` (`point_of_sale/models/res_users.py:26`). Never give a cashier
   accounting groups.

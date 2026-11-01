@@ -43,11 +43,10 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 **Exit:** clean install/upgrade; no duplicated Odoo logic; no server errors.
 
 ## Phase 2 — Roles and security
-- [ ] Map Administrator and Cashier to verified groups/POS access; decide the Administrator vs
-      technical-superuser separation.
-- [ ] Complete the permission matrix (spec §3) against real groups.
-- [ ] Restrict sensitive operations server-side.
-- [ ] Automated tests for allowed **and** denied operations (UI and direct RPC/ORM).
+- [x] Map Administrator and Cashier to verified groups/POS access: `group_retail_manager` / `group_retail_cashier` (`ARCHITECTURE.md` §6.2). Administrator is **not** `base.group_system`: the technical settings menus stay hidden (consequence recorded, revisit if the owner needs Settings).
+- [x] Complete the permission matrix (spec §3) against real groups: `ARCHITECTURE.md` §6.3 — Enforced / Config / Gap / Milestone B per row.
+- [x] Restrict sensitive operations server-side: refunds blocked for cashiers in `pos.order._refund()` and `pos.order.line` (`qty < 0`). Price override stays config-only (D-007, documented gap).
+- [x] Automated tests for allowed **and** denied operations: `tests/test_security.py`, 10 tests, `--test-tags /retail_management` → **0 failed, 0 errors** on `rms_test4`. Denied paths tested through ORM as the cashier user (equivalent to RPC), including self-escalation.
 
 **Exit:** cashier cannot bypass restrictions; administrator can manage and use POS.
 
