@@ -1,7 +1,7 @@
 from odoo import _, models
 from odoo.exceptions import AccessError
 
-MANAGER_GROUP = "retail_management.group_retail_manager"
+from .pos_order import is_retail_manager
 
 
 class StockPicking(models.Model):
@@ -14,7 +14,7 @@ class StockPicking(models.Model):
         cashier (`pos_order._create_order_picking` → `_action_done`), so blocking those would silently
         stop POS stock deduction.
         """
-        if self.env.user.has_group(MANAGER_GROUP):
+        if is_retail_manager(self.env):
             return
         if any(picking.picking_type_id.code in ("incoming", "internal") for picking in self):
             raise AccessError(_("Only a Retail Manager can receive or move stock."))

@@ -152,3 +152,18 @@ class TestRetailSecurity(TransactionCase):
     def test_manager_can_create_product(self):
         product = self.env["product.product"].with_user(self.manager).create({"name": "Manager Product"})
         self.assertTrue(product.exists())
+
+    def test_superuser_is_not_locked_out(self):
+        # A guard must never block Odoo superusers, or the owner could not fix a bad setup.
+        line = self.env["pos.order.line"].create(
+            {
+                "order_id": self.order.id,
+                "product_id": self.product.id,
+                "qty": -1,
+                "price_unit": 10.0,
+                "price_subtotal": -10.0,
+                "price_subtotal_incl": -10.0,
+            }
+        )
+        self.assertEqual(line.qty, -1)
+        self.order._refund()

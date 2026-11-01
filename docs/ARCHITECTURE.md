@@ -286,6 +286,27 @@ Native POS only. Confirmed on this build:
 **Customization rule:** configuration first. Custom POS JS only for an approved requirement, using the
 registries/`patch` above; custom restrictions on refunds/price/orders must be **server-side**.
 
+### 7.1 Store configuration done in the dev DB (Phase 4, 2026-11-01)
+
+Created through the ORM on `rms` (data, not code — re-create the same way on any new database; steps in
+`DEPLOYMENT.md` §11):
+
+| Item | Value |
+|---|---|
+| Cash journal | `Cash` (`CSH`), type cash, default account `101501` |
+| POS payment method | `Cash`, `is_cash_count = True` |
+| POS config | `Main Register`: payment `Cash`, `restrict_price_control = True` (manager-only price edits), `cash_control = True`, picking type `PoS Orders` |
+| Owner user | `admin` added to `retail_management.group_retail_manager` |
+
+**Verified POS → stock/accounting (ORM, `rms`):** session opened, order `Main Register - 000001` paid
+with cash 1.50, `_create_order_picking()` produced a **done** outgoing `PoS Orders` picking and the
+quant went **10 → 9**. A manager refund line (qty −1) is accepted. Not yet verified: the real browser
+POS UI, receipt printing, barcode scanner, session closing/cash difference — those stay Milestone C
+(Phase 8) because they need hardware or a human at the register.
+
+**Superuser rule:** the retail guards allow `env.is_admin()`, so the Odoo administrator can never be
+locked out of refunds or receipts while fixing a bad setup (covered by a test).
+
 ## 8. Inventory architecture — verified on `rms_test4` (2026-11-01)
 
 Standard Odoo workflows only; the add-on adds no inventory model. Verified end to end through the ORM:

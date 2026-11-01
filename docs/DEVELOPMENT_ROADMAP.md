@@ -61,12 +61,12 @@ and continue); hard stops in `AGENTS.md` apply at every level.
 **Exit:** scenarios A and D pass; quantities reconcile with native records.
 
 ## Phase 4 — POS
-- [ ] Configure POS and payment methods (cash first); cashier access and attribution.
-- [ ] Open/close session; search, cart, barcode scan; cash payment; receipt.
-- [ ] Refunds/returns with permission restrictions.
-- [ ] Concurrent cashiers; session closing totals; cash difference behaviour.
-- [ ] Verify POS-to-stock behaviour.
-- [ ] POS frontend customization only for approved needs.
+- [x] Configure POS and payment methods (cash first); cashier access and attribution: dev DB has `Main Register` + `Cash`; one Odoo user per cashier with native `pos.order.user_id` attribution; price edits restricted to managers (D-010, D-002).
+- [x] Open/close session; search, cart, barcode scan; cash payment; receipt — **ORM only**: session opened, order paid with cash, picking created. Browser UI, scanner and printed receipt are Milestone C (Phase 8).
+- [x] Refunds/returns with permission restrictions: cashier blocked server-side (`pos.order.line` qty < 0 and `_refund`), manager allowed — tested.
+- [ ] Concurrent cashiers; session closing totals; cash difference behaviour — **not verified** (needs two browsers at the register); Phase 8.
+- [x] Verify POS-to-stock behaviour: paid order created a **done** `PoS Orders` picking, quant 10 → 9.
+- [x] POS frontend customization only for approved needs: none needed — zero JS added.
 
 **Exit:** scenarios B, E, F, H pass without breaking native POS behaviour.
 

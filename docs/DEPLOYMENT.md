@@ -149,3 +149,25 @@ scripts/restore.sh backups/rms_X.dump backups/rms_X_filestore.tar.gz rms_restore
 - **Certificate error on LAN:** the Caddy local CA is not trusted on that device (section 5).
 - **Danger — deletes data:** `docker compose down -v`, `docker volume rm`, `docker system prune`.
   The agent must ask before running them.
+
+## 11. First store setup (new database)
+
+Do this once per database, as the administrator, in this order. Nothing here is custom code — it is
+native Odoo configuration.
+
+1. **Module:** install *Retail Management* (`custom_addons/retail_management`).
+2. **Users** (Settings → Users): one account per person. Assign exactly one retail group:
+   - *Retail Cashier* → checkout only.
+   - *Retail Manager* → products, stock, customers, invoices, POS configuration, refunds.
+   Never give a cashier `account.group_account_invoice`: Odoo then treats them as a POS manager.
+3. **Cash journal** (Invoicing → Configuration → Journals): create type *Cash* if none exists.
+4. **Payment method** (Point of Sale → Configuration → Payment Methods): name `Cash`, journal = the cash
+   journal above.
+5. **Point of Sale → Configuration → Settings**: create/open the register, add the `Cash` payment
+   method, enable *Restrict Price Modifications to Managers*, enable cash control if you want drawer
+   counts. Set the picking type to `PoS Orders`.
+6. **Products** (Retail Management → Products): name, price, cost, unit, barcode, internal reference;
+   tick *Available in POS* and make the product storable so stock is tracked.
+7. **Stock** (Retail Management → Inventory): receive starting quantity with a standard receipt;
+   corrections via inventory adjustment (managers only).
+8. **Owner:** change the default `admin` password before anyone else uses the server.
