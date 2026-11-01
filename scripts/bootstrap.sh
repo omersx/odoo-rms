@@ -45,7 +45,7 @@ EXISTS=$(docker compose exec -T db psql -U "$POSTGRES_USER" -d postgres -Atc \
 if [[ "$EXISTS" == "1" ]]; then
   echo "Database ${DB_NAME} already exists. Leaving it untouched."
 else
-  docker compose run --rm odoo odoo -d "$DB_NAME" -i base --without-demo=all --stop-after-init
+  docker compose run --rm odoo odoo -d "$DB_NAME" -i base --without-demo --stop-after-init
 fi
 
 echo "== 6/6 Start Odoo =="

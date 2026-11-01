@@ -50,7 +50,7 @@ The production config hides the database manager, so create the database from th
 Use demo-free data for anything real. **VERIFY flags against the Odoo 19 CLI docs.**
 ```bash
 docker compose run --rm odoo odoo -d "$(grep ^DB_NAME= .env | cut -d= -f2)" \
-  -i base --without-demo=all --stop-after-init
+  -i base --without-demo --stop-after-init
 docker compose up -d
 ```
 For a throwaway **test** database used by automated tests, use a different name (e.g. `rms_test`) and
@@ -138,7 +138,12 @@ scripts/restore.sh backups/rms_X.dump backups/rms_X_filestore.tar.gz rms_restore
 ## 10. Troubleshooting
 - **Odoo cannot read config:** `config/odoo.conf` must be readable by the container user (mode 644).
 - **"Module not found":** check `custom_addons/` is mounted and the module has a valid manifest;
-  restart Odoo and update the app list.
+  restart Odoo and update the app list. Odoo ignores an addons directory that contains no module
+  (`__init__.py` + `__manifest__.py`), so an empty `custom_addons/` logs "invalid addons directory".
+- **`docker compose pull` returns 403 "CloudFront ... block access from your country":** Docker Hub's
+  blob CDN is geo-blocked. Use a registry mirror with the same digests (e.g. `mirror.gcr.io/library/...`)
+  in `ODOO_IMAGE`/`POSTGRES_IMAGE`, or a VPN; verify digests with `docker buildx imagetools inspect`.
+  `scripts/bootstrap.sh dev` keeps the official tags by default, so set the mirror in `.env` in that case.
 - **Websocket/POS live updates fail behind the proxy:** confirm `workers > 0`, the `/websocket`
   route to port 8072 in `deployment/Caddyfile`, and `proxy_mode = True` (**VERIFY** in Odoo 19 docs).
 - **Certificate error on LAN:** the Caddy local CA is not trusted on that device (section 5).

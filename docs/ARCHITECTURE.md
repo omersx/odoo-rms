@@ -13,36 +13,42 @@ Product requirements live in `RETAIL_MANAGEMENT_SPEC.md`; progress lives in `DEV
 - Enforce security on the server; preserve transaction and stock traceability.
 - Verify every dependency and API against the exact Odoo 19 source.
 
-## 2. Environment — PARTIALLY VERIFIED (Stage 0 blocked on Docker WSL integration 2026-10-31)
+## 2. Environment — VERIFIED for the dev stack (2026-11-01)
 
-Only the client-side facts below were verified; **the stack has never run**, so every container-side
-value is still unverified. Evidence: `scripts/preflight.sh` run inside WSL Ubuntu (2 FAIL, 1 WARN),
-followed by `docker version` on Windows (engine answers) and a distro restart (socket still absent).
+The dev stack runs. Evidence: `scripts/preflight.sh` 0 failures; `http://localhost:8069/web/login`
+returns HTTP 200; versions read from inside the containers.
 
 | Item | Value |
 |---|---|
 | Host OS | Windows 10 22H2 (10.0.19045) with WSL2 Ubuntu 24.04.2 LTS, kernel 6.18.54.1 |
-| **Runtime option chosen** | ☑ Docker Desktop (attempted; owner has not formally confirmed) ☐ WSL2 + Ubuntu native Odoo |
-| Project location (must be Linux filesystem, not `/mnt/c`) | **OK:** `~/rms` = `/home/omer/rms` (copy of the baseline; Windows copy kept as backup) |
-| Docker only: compose file path, Odoo image tag/digest, PostgreSQL image tag, volumes | Kit at repo root: `docker-compose.yml` + `.dev.yml`/`.prod.yml`; tags default `odoo:19.0` / `postgres:16` (**not pulled, not verified**); volumes `db-data`, `odoo-data` |
-| Docker client / daemon | CLI 29.8.0, Compose 5.5.1 verified. Engine 29.8.0 answers on Windows; **NOT reachable from Ubuntu** (`/var/run/docker.sock` absent, survives distro restart); Docker Desktop reports `EnableIntegrationWithDefaultWslDistro=false` |
-| WSL2 only: Odoo checkout path, virtualenv path | Not applicable (no native install in `~`) |
-| Odoo version and source revision (commit/build) | Unknown — image never pulled |
-| Odoo source path | Not inspected; planned read-only inspection inside the container |
-| PostgreSQL version | Unknown — image never pulled (tag says 16) |
-| Python version | Unknown (container) |
-| `odoo.conf` path and addons paths | Container path `/etc/odoo/odoo.conf` (mounted from `config/`); template `addons_path = /mnt/extra-addons`, `data_dir = /var/lib/odoo`, `list_db = True`, `workers = 0` |
-| Custom addons directory | `./custom_addons` → `/mnt/extra-addons`; currently empty (`.gitkeep` only) |
-| Disposable test database name | `rms_test` (planned, not yet created) |
-| Command to start Odoo | `scripts/bootstrap.sh dev` (one shot) or `docker compose up -d` — **unverified** |
-| Command to install/upgrade module | `docker compose run --rm odoo odoo -d <db> -i retail_management --stop-after-init` — **unverified** |
-| Command to run tests | `docker compose run --rm odoo odoo -d rms_test -i retail_management --test-enable --stop-after-init` — **unverified** |
+| **Runtime option chosen** | ☑ Docker Desktop (confirmed working) ☐ WSL2 + Ubuntu native Odoo |
+| Project location (must be Linux filesystem, not `/mnt/c`) | `/home/omer/rms` (`~/rms`); Windows copy kept as backup |
+| Docker only: compose file path, Odoo image tag/digest, PostgreSQL image tag, volumes | `docker-compose.yml` + `docker-compose.dev.yml`; Odoo `mirror.gcr.io/library/odoo:19.0` @ `sha256:27f920e002c43a1af7022a68f3cc17db71a2f9f3348800cb050721ce54893e49`; PostgreSQL `mirror.gcr.io/library/postgres:16` @ `sha256:5db6dac2ef5dcff512f4f00a009c3c332b9f2f28f24277175bf3e4a3d02ef83a`; volumes `db-data`, `odoo-data` |
+| Docker client / daemon | CLI 29.8.0, Compose 5.5.1; engine 29.8.0 reachable from Ubuntu via Docker Desktop WSL integration (enabled 2026-11-01) |
+| WSL2 only: Odoo checkout path, virtualenv path | Not applicable (no native install) |
+| Odoo version and source revision (commit/build) | `Odoo Server 19.0-20261015` (official image build 2026-10-15; no git revision exposed by the image) |
+| Odoo source path | `/usr/lib/python3/dist-packages/odoo` (read-only inspection) |
+| PostgreSQL version | `PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2)` |
+| Python version | `Python 3.12.3` |
+| `odoo.conf` path and addons paths | Container `/etc/odoo/odoo.conf` (mounted from `config/`); effective addons: `/usr/lib/python3/dist-packages/odoo/addons`, `/var/lib/odoo/addons/19.0`, `/usr/lib/python3/dist-packages/addons`, plus `/mnt/extra-addons`. `data_dir=/var/lib/odoo`, `list_db=True`, `workers=0` |
+| Custom addons directory | `./custom_addons` → `/mnt/extra-addons`. Odoo skips an addons path that contains no module (`tools/config.py:_is_addons_path`), hence a warning while the directory is empty; a module makes it valid after restart |
+| Disposable test database name | `rms_test` (not created yet; created in Phase 1) |
+| Command to start Odoo | `docker compose up -d` — **verified**; `scripts/bootstrap.sh dev` — works after the image workaround below |
+| Command to install/upgrade module | `docker compose run --rm odoo odoo -d <db> -i <module> --stop-after-init` (base init verified; module install in Phase 1); upgrade with `-u` |
+| Command to run tests | `docker compose run --rm odoo odoo -d rms_test -i <module> --test-enable --stop-after-init` — **not executed yet** (no module until Phase 1) |
 | OpenCode version and configured model | OpenCode 1.19.1; `opencode.jsonc` default model `anthropic/claude-opus-5`; this session ran `opencode/deepseek-v4.1-flash-free` |
 | OpenCode tools actually present (agents/skills/MCP/plugins) | Plugins `superpowers`, `@dietrichgebert/ponytail`; user skill `planning-with-files`; MCP servers `govinfo`, `courtlistener`, `rea` (none Odoo-related, not RMS tools); `claude-mem` plugin disabled; no Odoo agents/commands installed |
-| Git remote / branch convention | Local repo only, **no remote**; single branch, commits `phase-N: summary`, tags `phase-N-done` |
+| Git remote / branch convention | Local repo only, **no remote**; branch `main`; commits `phase-N: summary`, tags `phase-N-done` |
 
-Not recorded here until verified: Odoo build/revision, PostgreSQL runtime version, image digests, actual
-working install/test commands, and whether the container's bundled addons match the expected list.
+**Image workaround (region-specific):** Docker Hub's blob CDN (`production.cloudfront.docker.com`)
+returns `403 — "The Amazon CloudFront distribution is configured to block access from your country."`
+for every layer, while manifest/auth requests work. `.env` therefore points at `mirror.gcr.io`
+(Google's Docker Hub mirror). Digests were compared with the official manifests via
+`docker buildx imagetools inspect` and are identical, so the content is the same official image.
+Without this, `scripts/bootstrap.sh dev` fails at `docker compose pull`. See `DECISIONS.md` D-001.
+
+**Odoo 19 CLI note:** `--without-demo` is a boolean since 19.0. The old `--without-demo=all` is invalid
+(Odoo warns and assumes `True`); `bootstrap.sh` and `DEPLOYMENT.md` were corrected.
 
 Safety: all development runs on a disposable database. Production is never touched by the agent.
 
