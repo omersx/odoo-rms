@@ -88,8 +88,13 @@ no security files yet (Phase 2).
 
 ```text
 custom_addons/retail_management/
-├── __init__.py            # comment only; Python models added when a gap is verified
+├── __init__.py            # Python models added when a gap is verified
 ├── __manifest__.py        # depends: point_of_sale, stock, account, contacts
+├── data/hide_discuss.xml  # hides the Discuss app (mail cannot be uninstalled) — D-011
+├── models/pos_order.py    # refund guard
+├── models/stock_picking.py# receipt/move guard
+├── security/retail_security.xml  # Retail Cashier / Retail Manager groups
+├── tests/test_security.py
 └── views/retail_menu.xml  # Retail Management menu → native actions
 ```
 

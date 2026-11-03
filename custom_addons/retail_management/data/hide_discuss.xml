@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Discuss stays installed (mail is a dependency of Contacts/Stock/Invoicing) but is hidden
+         from the app switcher: its root menu is restricted to a group nobody is assigned to.
+         Cosmetic only — not a security control. Assign the group to a user to bring it back. -->
+    <record id="group_no_discuss" model="res.groups">
+        <field name="name">Discuss hidden</field>
+        <field name="comment">Internal marker group used to hide the Discuss app. Do not assign it to anyone.</field>
+    </record>
+
+    <!-- <record id="mail.menu_root_discuss"> is ignored across modules, so write the menu directly. -->
+    <function model="ir.ui.menu" name="write">
+        <value eval="[ref('mail.menu_root_discuss')]"/>
+        <value eval="{'group_ids': [(6, 0, [ref('group_no_discuss')])]}"/>
+    </function>
+</odoo>
