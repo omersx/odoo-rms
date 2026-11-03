@@ -16,6 +16,8 @@ Nothing in progress. Milestone A is implemented and reported; **stopped at the g
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-03: Discuss app hidden (mail cannot be uninstalled — dependency of Contacts/Stock/Invoicing).
+  Root menu restricted to `group_no_discuss`; verified admin no longer sees it (D-011).
 - 2026-11-01: Phase 4: dev DB configured (`Main Register`, cash journal/payment method, manager-only price
   edits, cash control); POS sale verified end to end through the ORM (order paid, picking done, stock
   10 → 9, manager refund accepted). Docs: `ARCHITECTURE.md` §7.1, `DEPLOYMENT.md` §11, D-010.
