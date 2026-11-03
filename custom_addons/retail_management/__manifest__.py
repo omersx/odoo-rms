@@ -1,6 +1,6 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.3.0",
+    "version": "19.0.1.4.0",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "RMS",
     "license": "LGPL-3",
@@ -8,7 +8,7 @@
     "depends": ["point_of_sale", "stock", "account", "contacts"],
     "data": [
         "security/retail_security.xml",
-        "data/hide_discuss.xml",
+        "data/hide_apps.xml",
         "views/retail_menu.xml",
     ],
     "application": True,

@@ -90,7 +90,7 @@ no security files yet (Phase 2).
 custom_addons/retail_management/
 ├── __init__.py            # Python models added when a gap is verified
 ├── __manifest__.py        # depends: point_of_sale, stock, account, contacts
-├── data/hide_discuss.xml  # hides the Discuss app (mail cannot be uninstalled) — D-011
+├── data/hide_apps.xml     # hides Discuss and Contacts from the app switcher — D-011, D-012
 ├── models/pos_order.py    # refund guard
 ├── models/stock_picking.py# receipt/move guard
 ├── security/retail_security.xml  # Retail Cashier / Retail Manager groups

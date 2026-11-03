@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Apps that would only confuse a retail shop are not uninstalled (their modules are
+         dependencies), just hidden: the root menu is restricted to a group nobody holds.
+         Cosmetic only, not a security control. Assign the group to a user to bring an app back. -->
+    <record id="group_no_discuss" model="res.groups">
+        <field name="name">Hidden apps</field>
+        <field name="comment">Internal marker group used to hide Discuss and Contacts. Do not assign it to anyone.</field>
+    </record>
+
+    <!-- <record id="mail.menu_root_discuss"> is ignored across modules, so write the menus directly. -->
+    <function model="ir.ui.menu" name="write">
+        <value eval="[ref('mail.menu_root_discuss')]"/>
+        <value eval="{'group_ids': [(6, 0, [ref('group_no_discuss')])]}"/>
+    </function>
+    <function model="ir.ui.menu" name="write">
+        <value eval="[ref('contacts.menu_contacts')]"/>
+        <value eval="{'group_ids': [(6, 0, [ref('group_no_discuss')])]}"/>
+    </function>
+</odoo>
