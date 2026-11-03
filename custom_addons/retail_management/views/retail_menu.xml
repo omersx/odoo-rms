@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Retail workspace: links to native Odoo actions, owns no logic of its own. -->
-    <menuitem id="menu_retail_root" name="Retail Management" sequence="45"/>
+    <menuitem id="menu_retail_root"
+              name="Retail Management"
+              web_icon="retail_management,static/description/icon.png"
+              sequence="45"/>
 
     <menuitem id="menu_retail_pos"
               name="Point of Sale"

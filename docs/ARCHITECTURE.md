@@ -83,8 +83,7 @@ Conceptual only. Exact module names and dependencies are recorded in §4 once ve
 - Add models only after a verified gap; add POS JS/OWL only for an approved requirement, following
   Odoo 19 patterns (not copied from older versions).
 
-**Current content (Phase 1):** `__manifest__.py`, `__init__.py`, `views/retail_menu.xml`. No models,
-no security files yet (Phase 2).
+**Current content (2026-11-03):**
 
 ```text
 custom_addons/retail_management/
@@ -94,9 +93,21 @@ custom_addons/retail_management/
 ├── models/pos_order.py    # refund guard
 ├── models/stock_picking.py# receipt/move guard
 ├── security/retail_security.xml  # Retail Cashier / Retail Manager groups
+├── static/description/icon.png   # app icon (drawn locally, no external asset)
+├── static/src/scss/apps_grid.scss# icon-grid styling for the app switcher — D-013
+├── static/src/xml/apps_grid.xml  # inherits web.NavBar.AppsMenu (grid buttons) — D-013
 ├── tests/test_security.py
 └── views/retail_menu.xml  # Retail Management menu → native actions
 ```
+
+**App switcher (D-013):** Odoo 19 replaced the icon grid with a plain text dropdown
+(`web.NavBar.AppsMenu` renders `DropdownItem` with `t-esc="app.name"`; there is no `/odoo` home-menu
+grid and the string "Search menus" does not exist in the `web` addon). The grid in the owner's
+reference screenshots is Odoo 16–18 or a third-party backend theme. We restore it by **inheriting the
+navbar template** from this add-on (no core file touched) and rendering `app.webIconData`, which the
+server already provides from each menu's `web_icon`. Verified in a browser: 7 apps, icons, navigation.
+Note for future asset work: this build compiles SCSS with **libsass**, which rejects CSS `min()` with
+mixed units and silently breaks the whole `web.assets_web` stylesheet.
 
 **Workspace menus (verified on `rms_test2`)** — every item points at a native action, so no logic is
 duplicated and native ACLs still apply:

@@ -1,6 +1,6 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.4.0",
+    "version": "19.0.1.5.0",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "RMS",
     "license": "LGPL-3",
@@ -11,6 +11,12 @@
         "data/hide_apps.xml",
         "views/retail_menu.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "retail_management/static/src/scss/apps_grid.scss",
+            "retail_management/static/src/xml/apps_grid.xml",
+        ],
+    },
     "application": True,
     "installable": True,
 }
