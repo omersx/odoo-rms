@@ -33,7 +33,7 @@
     <menuitem id="menu_retail_customers"
               name="Customers"
               parent="menu_retail_root"
-              action="contacts.action_contacts"
+              action="account.res_partner_action_customer"
               groups="base.group_partner_manager"
               sequence="50"/>
 
