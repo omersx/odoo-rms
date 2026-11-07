@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Full-page app launcher (Odoo 16-18 style). Reached from the navbar apps button. -->
+    <record id="action_apps_page" model="ir.actions.client">
+        <field name="name">Apps</field>
+        <field name="tag">retail_management.apps_page</field>
+    </record>
+</odoo>

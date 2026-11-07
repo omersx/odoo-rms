@@ -94,18 +94,23 @@ custom_addons/retail_management/
 ├── models/stock_picking.py# receipt/move guard
 ├── security/retail_security.xml  # Retail Cashier / Retail Manager groups
 ├── static/description/icon.png   # app icon (drawn locally, no external asset)
-├── static/src/scss/apps_grid.scss# icon-grid styling for the app switcher — D-013
-├── static/src/xml/apps_grid.xml  # inherits web.NavBar.AppsMenu (grid buttons) — D-013
+├── static/src/apps_page/apps_page.js  # full-page app launcher client action — D-014
+├── static/src/scss/apps_page.scss     # launcher styling — D-014
+├── static/src/xml/apps_button.xml     # navbar button that opens the launcher — D-014
+├── static/src/xml/apps_page.xml       # launcher template — D-014
 ├── tests/test_security.py
+├── views/apps_page_action.xml  # ir.actions.client for the launcher — D-014
 └── views/retail_menu.xml  # Retail Management menu → native actions
 ```
 
-**App switcher (D-013):** Odoo 19 replaced the icon grid with a plain text dropdown
-(`web.NavBar.AppsMenu` renders `DropdownItem` with `t-esc="app.name"`; there is no `/odoo` home-menu
-grid and the string "Search menus" does not exist in the `web` addon). The grid in the owner's
-reference screenshots is Odoo 16–18 or a third-party backend theme. We restore it by **inheriting the
-navbar template** from this add-on (no core file touched) and rendering `app.webIconData`, which the
-server already provides from each menu's `web_icon`. Verified in a browser: 7 apps, icons, navigation.
+**App switcher (D-013 → D-014):** Odoo 19 replaced the full-page icon launcher with a plain text
+dropdown (`web.NavBar.AppsMenu` renders `DropdownItem` with `t-esc="app.name"`; there is no `/odoo`
+home-menu grid and the string "Search menus" does not exist in the `web` addon). The grid in the
+owner's reference screenshots is Odoo 16–18 or a third-party backend theme. We restore it as a
+**client action** (`retail_management.apps_page`): the navbar button is an inherited QWeb template that
+calls `action.doAction`, and the page renders `app.webIconData` (already provided by the server from
+each menu's `web_icon`) with a live search filter. No core file is touched and mobile keeps Odoo's own
+sidebar. Verified in a browser: 7 tiles, search filter, tile navigation.
 Note for future asset work: this build compiles SCSS with **libsass**, which rejects CSS `min()` with
 mixed units and silently breaks the whole `web.assets_web` stylesheet.
 

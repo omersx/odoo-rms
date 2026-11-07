@@ -16,6 +16,10 @@ Nothing in progress. Milestone A is implemented and reported; **stopped at the g
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-07: App switcher is now a **full-page icon launcher** like Odoo 16–18 (D-014): client action
+  `retail_management.apps_page` + navbar button (`apps_button.xml`), search box, icon tiles, gradient
+  background. Replaces the dropdown grid from D-013. Verified in a browser: 7 tiles with icons, live
+  search filter, tile navigation; tests 13/0 failed.
 - 2026-11-03: App switcher restored as an **icon grid** (owner request): new
   `static/src/xml/apps_grid.xml` inherits `web.NavBar.AppsMenu` (no core change), styling in
   `static/src/scss/apps_grid.scss`, and Retail Management got an app icon (D-013). Verified in a
@@ -58,7 +62,8 @@ None (Phase 4 committed and tagged `phase-4-done`).
 - D-001 mirror images · D-002 no `pos_hr` · D-003 no discounts · D-004 customers admin-only ·
   D-005 menus use native actions · D-006 no own-orders rule yet · D-007 refunds server-side, price
   config-only · D-008 receipt guard scope · D-009 negative stock allowed · D-010 POS config as data ·
-  D-011 Discuss hidden · D-012 Contacts hidden · D-013 icon-grid app switcher (template inherit).
+  D-011 Discuss hidden · D-012 Contacts hidden · D-013 icon-grid app switcher (template inherit) ·
+  D-014 full-page app launcher (supersedes D-013).
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only

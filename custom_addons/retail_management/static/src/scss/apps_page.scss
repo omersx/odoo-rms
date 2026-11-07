@@ -1,0 +1,107 @@
+// Full-page app launcher (see apps_page/apps_page.js).
+.o_retail_apps_page {
+    height: 100%;
+    overflow-y: auto;
+    padding: 3.5rem 1rem 2rem;
+    background: linear-gradient(135deg, #f8f9fb 0%, #eef1f7 55%, #e6ebf3 100%);
+}
+
+.o_retail_apps_container {
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+.o_retail_apps_search {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 2.5rem;
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+
+    i {
+        color: #9aa1ad;
+    }
+
+    input {
+        flex: 1;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        font-size: 1rem;
+        color: #374151;
+    }
+}
+
+.o_retail_apps_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 1.75rem 1rem;
+}
+
+.o_retail_app_tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    color: #374151;
+    text-align: center;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+        color: #111827;
+        text-decoration: none;
+
+        .o_retail_app_tile_icon {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+        }
+    }
+}
+
+.o_retail_app_tile_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+    background: #fff;
+    border-radius: 0.6rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+    img {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+    }
+
+    i {
+        font-size: 1.8rem;
+        color: #6b7280;
+    }
+}
+
+.o_retail_app_tile_label {
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.o_retail_apps_empty {
+    margin-top: 2rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+// Navbar button that opens the page (replaces the stock dropdown toggle).
+.o_navbar .o_navbar_apps_menu .o_retail_apps_button {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 0.75rem;
+    color: inherit;
+    text-decoration: none;
+}

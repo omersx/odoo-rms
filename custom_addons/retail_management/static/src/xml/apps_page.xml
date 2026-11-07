@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="retail_management.AppsPage">
+        <div class="o_retail_apps_page">
+            <div class="o_retail_apps_container">
+                <div class="o_retail_apps_search">
+                    <i class="oi oi-search"/>
+                    <input type="text"
+                           t-ref="search"
+                           t-model="state.search"
+                           placeholder="Search apps…"
+                           aria-label="Search apps"/>
+                </div>
+
+                <div class="o_retail_apps_grid">
+                    <a t-foreach="apps" t-as="app" t-key="app.id"
+                       class="o_retail_app_tile"
+                       t-att-href="getHref(app)"
+                       t-att-data-menu-xmlid="app.xmlid"
+                       t-on-click.prevent="() => this.open(app)">
+                        <span class="o_retail_app_tile_icon">
+                            <img t-if="app.webIconData" t-att-src="app.webIconData" t-att-alt="app.name"/>
+                            <i t-else="" class="oi oi-apps"/>
+                        </span>
+                        <span class="o_retail_app_tile_label" t-esc="app.name"/>
+                    </a>
+                </div>
+
+                <p t-if="!apps.length" class="o_retail_apps_empty">No app matches your search.</p>
+            </div>
+        </div>
+    </t>
+</templates>

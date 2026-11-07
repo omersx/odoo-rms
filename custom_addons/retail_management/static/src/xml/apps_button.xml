@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <!-- Odoo 19 opens a text dropdown as app switcher. The owner wants the Odoo 16-18 full page
+         instead, so the button links to our own client action (retail_management.apps_page).
+         Inherited template only; no core file is modified. Delete this file from the manifest
+         assets to get the stock dropdown back. -->
+    <t t-name="retail_management.AppsButton"
+       t-inherit="web.NavBar.AppsMenu"
+       t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_navbar_apps_menu')]" position="replace">
+            <div t-if="!isScopedApp" class="o_navbar_apps_menu">
+                <a class="o_retail_apps_button"
+                   href="/odoo/action-retail_management.action_apps_page"
+                   title="Home Menu"
+                   data-hotkey="h"
+                   t-on-click.prevent="() => env.services.action.doAction('retail_management.action_apps_page')">
+                    <i class="oi oi-apps"/>
+                </a>
+            </div>
+        </xpath>
+    </t>
+</templates>
