@@ -4,7 +4,7 @@
 > new agent reads. Detailed history belongs in Git, `DECISIONS.md` and the roadmap, not here.
 > If this file disagrees with the repository or running system, trust reality and fix this file.
 
-**Last updated:** 2026-11-01 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
+**Last updated:** 2026-11-08 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
 **autonomy:** 2          <!-- owner edits: 1 = guided, 2 = standard (default), 3 = high -->
 
 ## Where we are
@@ -12,10 +12,17 @@
 - Roadmap reference: `docs/DEVELOPMENT_ROADMAP.md` (do not copy its checklist here)
 
 ## Current task
-Nothing in progress. Milestone A is implemented and reported; **stopped at the gate for owner approval**
+The dev database `rms` is now configured for the owner's store: **Sudan, SDG, 0% taxes, prices tax
+included** (D-015). Milestone A is implemented and reported; **stopped at the gate for owner approval**
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-08: Store configured for **Sudan** (D-015): country + fiscal country Sudan, company currency
+  **SDG** (USD deactivated), prices **tax included**, the four generic taxes at **0%** and price-included.
+  No Sudan localization exists in Odoo 19, so the generic chart stays. Verified through the ORM
+  (100.00 → total 100.00, 0.00 tax; `Main Register` in SDG) and on the Invoicing Settings page
+  (Sudan / SDG / `0% (Sales)` / Tax Included). The 2 leftover test POS sales were deleted with the
+  owner's approval to unlock the currency change; the DB is back to 0 orders, 0 sessions, 0 journal items.
 - 2026-11-07: App switcher is now a **full-page icon launcher** like Odoo 16–18 (D-014): client action
   `retail_management.apps_page` + navbar button (`apps_button.xml`), search box, icon tiles, gradient
   background. Replaces the dropdown grid from D-013. Verified in a browser: 7 tiles with icons, live
@@ -57,13 +64,15 @@ None (Phase 4 committed and tagged `phase-4-done`).
 3. D-001: prod images still need a mirror/VPN in this country before Phase 8 deployment.
 4. WSL has 3 GB RAM; a full test/install run takes ~8 min. 8 GB recommended.
 5. Owner: change the default `admin` password.
+6. Owner: the company is still called **My Company** (no shop name yet) and the products are Odoo's demo
+   items with dollar-era prices now shown in SDG — both need real values before the register goes live.
 
 ## Decisions pending owner review
 - D-001 mirror images · D-002 no `pos_hr` · D-003 no discounts · D-004 customers admin-only ·
   D-005 menus use native actions · D-006 no own-orders rule yet · D-007 refunds server-side, price
   config-only · D-008 receipt guard scope · D-009 negative stock allowed · D-010 POS config as data ·
   D-011 Discuss hidden · D-012 Contacts hidden · D-013 icon-grid app switcher (template inherit) ·
-  D-014 full-page app launcher (supersedes D-013).
+  D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only

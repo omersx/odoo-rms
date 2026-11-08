@@ -155,19 +155,29 @@ scripts/restore.sh backups/rms_X.dump backups/rms_X_filestore.tar.gz rms_restore
 Do this once per database, as the administrator, in this order. Nothing here is custom code — it is
 native Odoo configuration.
 
-1. **Module:** install *Retail Management* (`custom_addons/retail_management`).
-2. **Users** (Settings → Users): one account per person. Assign exactly one retail group:
+1. **Country, currency, taxes** (Invoicing → Settings):
+   - *Fiscal Country* and the company country = **Sudan**, *Currency* = **SDG**, *Prices* = **Tax Included**.
+   - Default *Sales Tax* and *Purchase Tax* = **0%** (amount 0, price included).
+   - Leave *Package* on **Generic Chart of Accounts**: Odoo 19 Community has **no Sudan localization**
+     (`l10n_sd` does not exist), and installing a neighbouring country's pack would file the books under
+     foreign accounts and tax law.
+   - Do this **first**: Odoo refuses to change the company currency once any journal entry exists.
+   - After changing the country, open Configuration → Taxes and check they no longer say `(US)`.
+     `account.tax.country_id` does not follow the company country automatically; it must be set to Sudan
+     together with a Sudan tax group (details in `ARCHITECTURE.md` §7.2).
+2. **Module:** install *Retail Management* (`custom_addons/retail_management`).
+3. **Users** (Settings → Users): one account per person. Assign exactly one retail group:
    - *Retail Cashier* → checkout only.
    - *Retail Manager* → products, stock, customers, invoices, POS configuration, refunds.
    Never give a cashier `account.group_account_invoice`: Odoo then treats them as a POS manager.
-3. **Cash journal** (Invoicing → Configuration → Journals): create type *Cash* if none exists.
-4. **Payment method** (Point of Sale → Configuration → Payment Methods): name `Cash`, journal = the cash
+4. **Cash journal** (Invoicing → Configuration → Journals): create type *Cash* if none exists.
+5. **Payment method** (Point of Sale → Configuration → Payment Methods): name `Cash`, journal = the cash
    journal above.
-5. **Point of Sale → Configuration → Settings**: create/open the register, add the `Cash` payment
+6. **Point of Sale → Configuration → Settings**: create/open the register, add the `Cash` payment
    method, enable *Restrict Price Modifications to Managers*, enable cash control if you want drawer
    counts. Set the picking type to `PoS Orders`.
-6. **Products** (Retail Management → Products): name, price, cost, unit, barcode, internal reference;
+7. **Products** (Retail Management → Products): name, price, cost, unit, barcode, internal reference;
    tick *Available in POS* and make the product storable so stock is tracked.
-7. **Stock** (Retail Management → Inventory): receive starting quantity with a standard receipt;
+8. **Stock** (Retail Management → Inventory): receive starting quantity with a standard receipt;
    corrections via inventory adjustment (managers only).
-8. **Owner:** change the default `admin` password before anyone else uses the server.
+9. **Owner:** change the default `admin` password before anyone else uses the server.

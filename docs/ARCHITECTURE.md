@@ -328,6 +328,27 @@ POS UI, receipt printing, barcode scanner, session closing/cash difference — t
 **Superuser rule:** the retail guards allow `env.is_admin()`, so the Odoo administrator can never be
 locked out of refunds or receipts while fixing a bad setup (covered by a test).
 
+### 7.2 Country, currency and taxes — Sudan (2026-11-08, D-015)
+
+Odoo 19 Community has **no Sudan localization** (`l10n_sd` does not exist in the image), so the company
+keeps the **Generic Chart of Accounts** and the country/currency/tax facts are plain data. Verified
+through the ORM on `rms`:
+
+| Setting | Value |
+|---|---|
+| Country / Fiscal country | Sudan (`base.sd`), both |
+| Company currency | SDG (symbol `ج.س.`); USD deactivated → SDG is the only active currency |
+| Prices | `account_price_include = tax_included` |
+| Default taxes | `0% (Sales)`, `0% (Purchase)`, both `price_include_override = tax_included`, amount 0 |
+| Tax group | `Taxes` (country Sudan) — created because `account.tax.tax_group_id` is required |
+| Register | `Main Register` now in SDG |
+
+Consequences verified: a product priced `100.00` computes `total_included = 100.00` with `0.00` tax;
+`compute_all` returns no tax lines above zero. Two Odoo 19 facts worth remembering:
+`res.company.currency_id` refuses to change while any `account.move.line` exists, and
+`account.tax.country_id` is `@api.depends('company_id')` only — moving the company leaves the old
+country on the taxes, so they must be re-pointed (with a matching tax group) by hand.
+
 ## 8. Inventory architecture — verified on `rms_test4` (2026-11-01)
 
 Standard Odoo workflows only; the add-on adds no inventory model. Verified end to end through the ORM:

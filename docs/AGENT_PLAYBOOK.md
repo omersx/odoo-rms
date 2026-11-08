@@ -16,6 +16,14 @@ How to work autonomously and safely. `AGENTS.md` holds the rules; this holds the
 7. **Stuck rules:** same approach fails 3 times → change approach. Two distinct approaches fail, or
    the fix needs a Hard-stop action → escalate (§3).
 
+### 1.1 Browser checks (cost real time if you skip this)
+- Odoo's webclient mounts on the next animation frame, so an **unfocused/background tab stays blank**
+  (`<body class="o_web_client">` with no content, no console error). Call `tabs.focus` and reload before
+  concluding that a page is broken.
+- When `browser.evaluate` reports an empty `document.body`, re-read the page with `browser.snapshot`
+  before debugging: the DOM is often fine.
+- A blank page is not proof of a bug. Compare against a page you know works in the same session.
+
 ## 2. Making a decision
 1. Is it a Hard stop? → escalate. Otherwise continue.
 2. List realistic options (usually 2–3). Prefer: native Odoo over custom; smaller over larger;
