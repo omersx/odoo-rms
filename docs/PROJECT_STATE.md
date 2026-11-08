@@ -17,6 +17,11 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-08: Payment tiles now show the **banks' own icons** (Bankak, Fawry, O-Cash, Amen), supplied by the
+  owner from `banks-icons/`. Corners flood-filled transparent, resized, stored in `pos.payment.method.image`
+  — which Odoo caps at 50×50 px, so the till shows 50 px icons. Nothing committed to Git (the images live in
+  the database). `write()` blocks fields other than `sequence` while a session is open, so the image was
+  written through the base ORM `write`; the owner's open session was not closed.
 - 2026-11-08: POS payment methods in **two columns with full 50 px icons** (D-019), so all five fit with no
   scrollbar (owner's screenshot showed the last one cut off). New `static/src/pos/payment_methods.scss` in
   `point_of_sale._assets_pos`; core's own 2-column rule never applied because the desktop markup adds

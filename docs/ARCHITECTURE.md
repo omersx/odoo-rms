@@ -340,7 +340,10 @@ locked out of refunds or receipts while fixing a bad setup (covered by a test).
 | Amen | `AMEN` | 101408 | bank |
 
 Odoo renders each method as a tile using `pos.payment.method.image` (falling back to `money.png` for cash and
-`card-bank.png` for bank); the four glyphs were drawn locally with PIL, not copied from the brands. The
+`card-bank.png` for bank). The tile icons are the **banks' own artwork**, supplied by the owner and loaded
+into the database; the field caps them at 50×50 px (`pos_payment_method.py:60`), so nothing larger can be
+stored and no image file is committed to Git. Before the owner supplied the logos, neutral glyphs drawn
+locally with PIL were used instead. The
 tiles are laid out **two per row with their 50 px icons** by our own
 `static/src/pos/payment_methods.scss` (D-019): core declares
 `.paymentmethods { grid-template-columns: repeat(2, 1fr) }` but never applies it on desktop because the
