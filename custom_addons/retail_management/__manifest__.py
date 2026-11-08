@@ -19,7 +19,7 @@
             "retail_management/static/src/xml/apps_page.xml",
             "retail_management/static/src/xml/apps_button.xml",
         ],
-        # POS payment screen: keep every payment method visible (D-019)
+        # POS payment screen: two columns, full-size icons (D-019)
         "point_of_sale._assets_pos": [
             "retail_management/static/src/pos/payment_methods.scss",
         ],

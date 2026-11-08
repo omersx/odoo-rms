@@ -1,7 +1,12 @@
-/* POS payment screen: two compact columns, so every payment method stays visible without
-   scrolling (D-019). Core stacks the buttons in one column on desktop, and Bootstrap's
-   `d-flex` utility only loses to `display` if it is `!important`. The same rules also
-   shrink the tiles on the small-screen layout, where 5 methods overflowed 2 columns. */
+/* POS payment screen (D-019).
+
+   Odoo stacks the payment methods in one column on desktop, so with five methods the last one is cut
+   off. `display: grid !important` is the only way to beat its `d-flex`; two columns put the five tiles
+   in three rows that fit the register's side pane, while the icons stay at Odoo's full 50 px.
+
+   Amount: Odoo hardcodes `font-size: 125px` on the due total in the template, which overflows the
+   centre pane for a 7-digit SDG amount. A `!important` clamp is the only way to beat an inline style. */
+
 .payment-screen .paymentmethods {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -12,18 +17,18 @@
 .payment-screen .paymentmethod {
     min-height: 0;
     overflow: hidden;
-    padding: 0.35rem 0.5rem;
-    font-size: 0.9rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.95rem;
     line-height: 1.15;
 }
 
 .payment-screen .payment-method-icon {
-    max-width: 32px;
-    max-height: 32px;
+    max-width: 50px;
+    max-height: 50px;
 }
 
 .payment-screen .payment-method-display {
-    gap: 0.35rem !important;
+    gap: 0.4rem !important;
     min-width: 0;
 }
 
@@ -36,4 +41,9 @@
 .payment-screen .paymentmethod .text-muted {
     font-size: 0.7rem;
     white-space: nowrap;
+}
+
+/* Applies only where the template puts the inline 125 px on the total (desktop branch). */
+.payment-screen .paymentlines-container .total[style*="125px"] {
+    font-size: clamp(40px, 6vw, 96px) !important;
 }
