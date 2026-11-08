@@ -26,6 +26,9 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
   Afterwards the demo catalogue (43 products) was converted from dollar-era figures to SDG at the owner's
   rate of **10,000 SDG = 1 USD** (`Whiteboard Pen` 1.20 → 12,000, `Two-Seat Sofa` 1,500 → 15,000,000),
   prices and costs both scaled. No pricelist had fixed prices, so nothing else needed touching.
+  The currency symbol was then changed from the Arabic `ج.س.` to **`SDG`** (owner request), so every amount
+  now reads `12,000.00 SDG`. Gotcha: `res.currency` symbols are cached in the worker, so the server must be
+  restarted before the change shows up in the browser.
 - 2026-11-07: App switcher is now a **full-page icon launcher** like Odoo 16–18 (D-014): client action
   `retail_management.apps_page` + navbar button (`apps_button.xml`), search box, icon tiles, gradient
   background. Replaces the dropdown grid from D-013. Verified in a browser: 7 tiles with icons, live
@@ -65,7 +68,9 @@ None (Phase 4 committed and tagged `phase-4-done`).
 1. **Milestone A gate**: accept the working core or list changes.
 2. D-002…D-010 are Tier 2 decisions, implemented and reversible; listed in the report.
 3. D-001: prod images still need a mirror/VPN in this country before Phase 8 deployment.
-4. WSL has 3 GB RAM; a full test/install run takes ~8 min. 8 GB recommended.
+4. WSL has 3 GB RAM; a full test/install run takes ~8 min. 8 GB recommended. The PostgreSQL container
+   has already recovered once from an unclean shutdown after the memory ran out — a crashed dev DB is a
+   reminder, not a data loss so far, but give WSL more memory before any long run.
 5. Owner: change the default `admin` password.
 6. Owner: the company is still called **My Company** (no shop name yet) and the products are Odoo's demo
    items, now priced in SDG at 10,000 per USD — the catalogue needs your real items and prices before the

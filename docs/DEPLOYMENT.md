@@ -157,6 +157,9 @@ native Odoo configuration.
 
 1. **Country, currency, taxes** (Invoicing → Settings):
    - *Fiscal Country* and the company country = **Sudan**, *Currency* = **SDG**, *Prices* = **Tax Included**.
+   - Set the currency symbol to `SDG` (Invoicing → Configuration → Currencies → SDG → Symbol), otherwise
+     amounts render with the Arabic `ج.س.`. **Restart the server afterwards** — currency symbols are cached
+     per worker and do not refresh on their own.
    - Default *Sales Tax* and *Purchase Tax* = **0%** (amount 0, price included).
    - Leave *Package* on **Generic Chart of Accounts**: Odoo 19 Community has **no Sudan localization**
      (`l10n_sd` does not exist), and installing a neighbouring country's pack would file the books under

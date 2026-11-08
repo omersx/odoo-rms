@@ -337,7 +337,7 @@ through the ORM on `rms`:
 | Setting | Value |
 |---|---|
 | Country / Fiscal country | Sudan (`base.sd`), both |
-| Company currency | SDG (symbol `ج.س.`); USD deactivated → SDG is the only active currency |
+| Company currency | SDG (symbol `SDG`; Odoo ships the Arabic `ج.س.` — cached per worker, restart after editing); USD deactivated → SDG is the only active currency |
 | Prices | `account_price_include = tax_included` |
 | Default taxes | `0% (Sales)`, `0% (Purchase)`, both `price_include_override = tax_included`, amount 0 |
 | Tax group | `Taxes` (country Sudan) — created because `account.tax.tax_group_id` is required |
