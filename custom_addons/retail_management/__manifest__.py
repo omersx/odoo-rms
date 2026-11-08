@@ -1,6 +1,6 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.7.0",
+    "version": "19.0.1.8.0",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "RMS",
     "license": "LGPL-3",
@@ -20,8 +20,10 @@
             "retail_management/static/src/xml/apps_button.xml",
         ],
         # POS payment screen: two columns, full-size icons (D-019)
+        # POS receipt: QR only, no portal URL or 5-char code (D-021)
         "point_of_sale._assets_pos": [
             "retail_management/static/src/pos/payment_methods.scss",
+            "retail_management/static/src/pos/receipt.scss",
         ],
     },
     "application": True,

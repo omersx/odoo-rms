@@ -17,6 +17,10 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-08: Receipt now prints **QR only** (D-021): the portal URL and the 5-character code are hidden by
+  `static/src/pos/receipt.scss`. Core's company setting can remove the URL but not the code, which is
+  unconditional in `order_receipt.xml:78-92`. Verified the rule is in the loaded POS bundle and both children
+  of `.pos-receipt` compute `display: none`; the QR still points at that sale's ticket.
 - 2026-11-08: Raised the payment icon storage cap from Odoo's 50×50 to **256×256** (D-020) because the owner
   said the brand logos looked low quality. `models/pos_payment_method.py` redeclares the field in an
   `_inherit` model — verified `_fields['image'].max_width == 256` and the four icons now stored as 256×256

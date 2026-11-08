@@ -1,0 +1,11 @@
+/* Receipt (D-021).
+
+   Odoo prints the QR, the portal URL and a 5-character code. The URL and the code are only usable
+   together (the portal form asks for the receipt number, the date and that code), and with the QR
+   printed neither is needed — the QR opens that sale's ticket directly. The URL is also the server's
+   own address, which is `localhost` on this install and means nothing to a customer. */
+
+.pos-receipt .unique-code,
+.pos-receipt .portal-url {
+    display: none !important;
+}

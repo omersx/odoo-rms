@@ -355,6 +355,14 @@ counted/difference, and the session closing entry groups receivables by `payment
 (D-018): a wallet method has no terminal or provider, so tapping it marks the order paid with no proof the
 transfer arrived.
 
+The printed receipt keeps Odoo's **QR code** but not the portal URL or the 5-character ticket code
+(D-021). The QR encodes `/pos/ticket/validate?access_token=…`, i.e. a direct link to that one sale, so
+neither of the other two is needed; they only work together on the portal's manual form (receipt number +
+date + code). Our `static/src/pos/receipt.scss` hides `.pos-receipt .unique-code` and `.pos-receipt
+.portal-url`; all three are printed by core's `order_receipt.xml:78-92`, where the code is **not**
+conditional on the company's "Print" setting, so CSS is the only way to drop it without a template
+override.
+
 ### 7.2 Country, currency and taxes — Sudan (2026-11-08, D-015)
 
 Odoo 19 Community has **no Sudan localization** (`l10n_sd` does not exist in the image), so the company
