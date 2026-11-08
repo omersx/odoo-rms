@@ -23,6 +23,9 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
   (100.00 → total 100.00, 0.00 tax; `Main Register` in SDG) and on the Invoicing Settings page
   (Sudan / SDG / `0% (Sales)` / Tax Included). The 2 leftover test POS sales were deleted with the
   owner's approval to unlock the currency change; the DB is back to 0 orders, 0 sessions, 0 journal items.
+  Afterwards the demo catalogue (43 products) was converted from dollar-era figures to SDG at the owner's
+  rate of **10,000 SDG = 1 USD** (`Whiteboard Pen` 1.20 → 12,000, `Two-Seat Sofa` 1,500 → 15,000,000),
+  prices and costs both scaled. No pricelist had fixed prices, so nothing else needed touching.
 - 2026-11-07: App switcher is now a **full-page icon launcher** like Odoo 16–18 (D-014): client action
   `retail_management.apps_page` + navbar button (`apps_button.xml`), search box, icon tiles, gradient
   background. Replaces the dropdown grid from D-013. Verified in a browser: 7 tiles with icons, live
@@ -65,7 +68,9 @@ None (Phase 4 committed and tagged `phase-4-done`).
 4. WSL has 3 GB RAM; a full test/install run takes ~8 min. 8 GB recommended.
 5. Owner: change the default `admin` password.
 6. Owner: the company is still called **My Company** (no shop name yet) and the products are Odoo's demo
-   items with dollar-era prices now shown in SDG — both need real values before the register goes live.
+   items, now priced in SDG at 10,000 per USD — the catalogue needs your real items and prices before the
+   register goes live. Note: some demo items have a *cost* above their *sale price* (e.g. `Large Cabinet`
+   costs 8,000,000 and sells for 3,200,000) because Odoo's demo data was never consistent; real costs fix it.
 
 ## Decisions pending owner review
 - D-001 mirror images · D-002 no `pos_hr` · D-003 no discounts · D-004 customers admin-only ·
