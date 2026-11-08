@@ -17,6 +17,11 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-08: Four **mobile-bank payment methods** added to `Main Register` (D-017): Bankak, Fawry, O-Cash,
+  Amen, each with its own bank journal (`BNKK`/`FAWR`/`OCAS`/`AMEN`, accounts 101405–101408) and a locally
+  drawn icon; Cash stays first. Verified in the register: 5 tiles with icons, the closing dialog shows a
+  Counted/Difference line per method, and the test session closed with 0 orders / 0 journal entries.
+  Recorded the trust-on-the-cashier risk of wallet payments as D-018.
 - 2026-11-08: Cash-difference guard on `Main Register` (D-016): *Set Maximum Difference* on, limit
   **10,000 SDG** (≈ 1 USD). A cashier cannot close a session whose counted cash is off by more, a manager
   must accept it. Verified in the Odoo 19 source (`closing_popup.js` + `pos_session._load_pos_data`) and in
@@ -86,7 +91,9 @@ None (Phase 4 committed and tagged `phase-4-done`).
   D-005 menus use native actions · D-006 no own-orders rule yet · D-007 refunds server-side, price
   config-only · D-008 receipt guard scope · D-009 negative stock allowed · D-010 POS config as data ·
   D-011 Discuss hidden · D-012 Contacts hidden · D-013 icon-grid app switcher (template inherit) ·
-  D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes.
+  D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
+  D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
+  trust-on-the-cashier.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only

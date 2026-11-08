@@ -175,7 +175,9 @@ native Odoo configuration.
    Never give a cashier `account.group_account_invoice`: Odoo then treats them as a POS manager.
 4. **Cash journal** (Invoicing → Configuration → Journals): create type *Cash* if none exists.
 5. **Payment method** (Point of Sale → Configuration → Payment Methods): name `Cash`, journal = the cash
-   journal above.
+   journal above. For each mobile wallet (Bankak, Fawry, …) create **its own Bank journal** first, then the
+   method on that journal, so each wallet books to its own account and is reported separately. Optionally
+   set an `image` per method — the till shows it as the button's icon.
 6. **Point of Sale → Configuration → Settings**: create/open the register, add the `Cash` payment
    method, enable *Restrict Price Modifications to Managers*, enable cash control if you want drawer
    counts, and enable **Set Maximum Difference** with a small amount (10,000 SDG ≈ 1 USD): a cashier can

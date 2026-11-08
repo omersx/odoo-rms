@@ -328,6 +328,23 @@ POS UI, receipt printing, barcode scanner, session closing/cash difference — t
 **Superuser rule:** the retail guards allow `env.is_admin()`, so the Odoo administrator can never be
 locked out of refunds or receipts while fixing a bad setup (covered by a test).
 
+**Payment methods on `Main Register` (D-017, verified 2026-11-08):** `Cash` (cash journal `CSH`, account
+`101501`) plus four mobile wallets, each on its own bank journal so its money is separable:
+
+| Method | Journal | Account | Type |
+|---|---|---|---|
+| Cash | `CSH` | 101501 | cash |
+| Bankak | `BNKK` | 101405 | bank |
+| Fawry | `FAWR` | 101406 | bank |
+| O-Cash | `OCAS` | 101407 | bank |
+| Amen | `AMEN` | 101408 | bank |
+
+Odoo renders each method as a tile using `pos.payment.method.image` (falling back to `money.png` for cash and
+`card-bank.png` for bank); the four glyphs were drawn locally with PIL, not copied from the brands. The
+closing dialog lists **every** method with its own counted/difference, and the session closing entry groups
+receivables by `payment_method_id`. Caveat (D-018): a wallet method has no terminal or provider, so tapping
+it marks the order paid with no proof the transfer arrived.
+
 ### 7.2 Country, currency and taxes — Sudan (2026-11-08, D-015)
 
 Odoo 19 Community has **no Sudan localization** (`l10n_sd` does not exist in the image), so the company
