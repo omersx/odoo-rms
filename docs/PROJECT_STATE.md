@@ -17,6 +17,12 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-08: Raised the payment icon storage cap from Odoo's 50×50 to **256×256** (D-020) because the owner
+  said the brand logos looked low quality. `models/pos_payment_method.py` redeclares the field in an
+  `_inherit` model — verified `_fields['image'].max_width == 256` and the four icons now stored as 256×256
+  PNGs (were 50×50), still drawn at 50 CSS px in the till with no scrollbar. **Waiting on the owner**: new,
+  simpler artwork (symbol only) to load with the same script; a 50 px tile cannot carry the small text in
+  the bank badges regardless of storage size.
 - 2026-11-08: Payment tiles now show the **banks' own icons** (Bankak, Fawry, O-Cash, Amen), supplied by the
   owner from `banks-icons/`. Corners flood-filled transparent, resized, stored in `pos.payment.method.image`
   — which Odoo caps at 50×50 px, so the till shows 50 px icons. Nothing committed to Git (the images live in

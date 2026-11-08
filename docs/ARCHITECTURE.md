@@ -341,9 +341,10 @@ locked out of refunds or receipts while fixing a bad setup (covered by a test).
 
 Odoo renders each method as a tile using `pos.payment.method.image` (falling back to `money.png` for cash and
 `card-bank.png` for bank). The tile icons are the **banks' own artwork**, supplied by the owner and loaded
-into the database; the field caps them at 50×50 px (`pos_payment_method.py:60`), so nothing larger can be
-stored and no image file is committed to Git. Before the owner supplied the logos, neutral glyphs drawn
-locally with PIL were used instead. The
+into the database; no image file is committed to Git. Core caps that field at 50×50
+(`pos_payment_method.py:60`), so `models/pos_payment_method.py` redeclares it at **256×256** (D-020): the
+tile still draws it at 50 CSS px, the extra pixels only matter on a high-DPI screen or when zoomed.
+Before the owner supplied the logos, neutral glyphs drawn locally with PIL were used instead. The
 tiles are laid out **two per row with their 50 px icons** by our own
 `static/src/pos/payment_methods.scss` (D-019): core declares
 `.paymentmethods { grid-template-columns: repeat(2, 1fr) }` but never applies it on desktop because the
