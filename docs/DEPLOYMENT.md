@@ -178,7 +178,9 @@ native Odoo configuration.
    journal above.
 6. **Point of Sale → Configuration → Settings**: create/open the register, add the `Cash` payment
    method, enable *Restrict Price Modifications to Managers*, enable cash control if you want drawer
-   counts. Set the picking type to `PoS Orders`.
+   counts, and enable **Set Maximum Difference** with a small amount (10,000 SDG ≈ 1 USD): a cashier can
+   then not close a session whose drawer is off by more than that, a manager must accept it (D-016).
+   Set the picking type to `PoS Orders`.
 7. **Products** (Retail Management → Products): name, price, cost, unit, barcode, internal reference;
    tick *Available in POS* and make the product storable so stock is tracked.
 8. **Stock** (Retail Management → Inventory): receive starting quantity with a standard receipt;

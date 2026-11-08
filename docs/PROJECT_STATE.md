@@ -17,6 +17,10 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-08: Cash-difference guard on `Main Register` (D-016): *Set Maximum Difference* on, limit
+  **10,000 SDG** (≈ 1 USD). A cashier cannot close a session whose counted cash is off by more, a manager
+  must accept it. Verified in the Odoo 19 source (`closing_popup.js` + `pos_session._load_pos_data`) and in
+  the Settings UI (switch checked, amount stored on the register).
 - 2026-11-08: Store configured for **Sudan** (D-015): country + fiscal country Sudan, company currency
   **SDG** (USD deactivated), prices **tax included**, the four generic taxes at **0%** and price-included.
   No Sudan localization exists in Odoo 19, so the generic chart stays. Verified through the ORM
