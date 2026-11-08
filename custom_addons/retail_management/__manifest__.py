@@ -1,6 +1,6 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.6.0",
+    "version": "19.0.1.6.1",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "RMS",
     "license": "LGPL-3",
@@ -18,6 +18,10 @@
             "retail_management/static/src/apps_page/apps_page.js",
             "retail_management/static/src/xml/apps_page.xml",
             "retail_management/static/src/xml/apps_button.xml",
+        ],
+        # POS payment screen: keep every payment method visible (D-019)
+        "point_of_sale._assets_pos": [
+            "retail_management/static/src/pos/payment_methods.scss",
         ],
     },
     "application": True,

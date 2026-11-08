@@ -17,6 +17,11 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-08: POS payment methods now sit in **two compact columns** (D-019), so all five fit on the screen
+  with no scrolling (the owner's screenshot showed the last method cut off). New
+  `static/src/pos/payment_methods.scss` in `point_of_sale._assets_pos`; core's own 2-column rule never
+  applied because the desktop markup adds `d-flex flex-column`. Measured on the desktop branch: 400 px pane,
+  two 186 px columns, 5 tiles in 3 rows of 45 px, `scrollHeight == clientHeight`.
 - 2026-11-08: Four **mobile-bank payment methods** added to `Main Register` (D-017): Bankak, Fawry, O-Cash,
   Amen, each with its own bank journal (`BNKK`/`FAWR`/`OCAS`/`AMEN`, accounts 101405–101408) and a locally
   drawn icon; Cash stays first. Verified in the register: 5 tiles with icons, the closing dialog shows a

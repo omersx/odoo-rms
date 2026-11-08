@@ -341,9 +341,12 @@ locked out of refunds or receipts while fixing a bad setup (covered by a test).
 
 Odoo renders each method as a tile using `pos.payment.method.image` (falling back to `money.png` for cash and
 `card-bank.png` for bank); the four glyphs were drawn locally with PIL, not copied from the brands. The
-closing dialog lists **every** method with its own counted/difference, and the session closing entry groups
-receivables by `payment_method_id`. Caveat (D-018): a wallet method has no terminal or provider, so tapping
-it marks the order paid with no proof the transfer arrived.
+tiles are laid out **two per row** by our own `static/src/pos/payment_methods.scss` (D-019): core declares
+`.paymentmethods { grid-template-columns: repeat(2, 1fr) }` but never applies it on desktop because the
+template adds `d-flex flex-column`, which stacks all five in one column and pushes the last one out of
+view. The closing dialog lists **every** method with its own counted/difference, and the session closing
+entry groups receivables by `payment_method_id`. Caveat (D-018): a wallet method has no terminal or provider,
+so tapping it marks the order paid with no proof the transfer arrived.
 
 ### 7.2 Country, currency and taxes — Sudan (2026-11-08, D-015)
 

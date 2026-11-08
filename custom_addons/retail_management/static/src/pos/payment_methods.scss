@@ -1,0 +1,39 @@
+/* POS payment screen: two compact columns, so every payment method stays visible without
+   scrolling (D-019). Core stacks the buttons in one column on desktop, and Bootstrap's
+   `d-flex` utility only loses to `display` if it is `!important`. The same rules also
+   shrink the tiles on the small-screen layout, where 5 methods overflowed 2 columns. */
+.payment-screen .paymentmethods {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem;
+    align-content: start;
+}
+
+.payment-screen .paymentmethod {
+    min-height: 0;
+    overflow: hidden;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.15;
+}
+
+.payment-screen .payment-method-icon {
+    max-width: 32px;
+    max-height: 32px;
+}
+
+.payment-screen .payment-method-display {
+    gap: 0.35rem !important;
+    min-width: 0;
+}
+
+.payment-screen .payment-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.payment-screen .paymentmethod .text-muted {
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
