@@ -10,14 +10,19 @@
 .payment-screen .paymentmethods {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.25rem;
+    gap: 0.125rem;
     align-content: start;
+}
+
+/* Odoo's 16 px bottom margin is the difference between 3 rows fitting a 720 px-tall window or not. */
+.payment-screen .paymentmethods-container {
+    margin-bottom: 0 !important;
 }
 
 .payment-screen .paymentmethod {
     min-height: 0;
     overflow: hidden;
-    padding: 0.2rem 0.5rem;
+    padding: 0.1rem 0.5rem;
     font-size: 0.95rem;
     line-height: 1.15;
 }
