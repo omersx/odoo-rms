@@ -22,7 +22,7 @@ returns HTTP 200; versions read from inside the containers.
 |---|---|
 | Host OS | Windows 10 22H2 (10.0.19045) with WSL2 Ubuntu 24.04.2 LTS, kernel 6.18.54.1 |
 | **Runtime option chosen** | ☑ Docker Desktop (confirmed working) ☐ WSL2 + Ubuntu native Odoo |
-| Project location (must be Linux filesystem, not `/mnt/c`) | `/home/omer/rms` (`~/rms`); Windows copy kept as backup |
+| Project location (must be Linux filesystem, not `/mnt/c`) | `~/rms` (the path used in the recorded commands below) |
 | Docker only: compose file path, Odoo image tag/digest, PostgreSQL image tag, volumes | `docker-compose.yml` + `docker-compose.dev.yml`; Odoo `mirror.gcr.io/library/odoo:19.0` @ `sha256:27f920e002c43a1af7022a68f3cc17db71a2f9f3348800cb050721ce54893e49`; PostgreSQL `mirror.gcr.io/library/postgres:16` @ `sha256:5db6dac2ef5dcff512f4f00a009c3c332b9f2f28f24277175bf3e4a3d02ef83a`; volumes `db-data`, `odoo-data` |
 | Docker client / daemon | CLI 29.8.0, Compose 5.5.1; engine 29.8.0 reachable from Ubuntu via Docker Desktop WSL integration (enabled 2026-11-01) |
 | WSL2 only: Odoo checkout path, virtualenv path | Not applicable (no native install) |

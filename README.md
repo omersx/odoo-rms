@@ -1,4 +1,4 @@
-# Retail Management System (RMS) for Odoo 19 Community
+# odoo-rms — Retail Management System for Odoo 19 Community
 
 A thin, opinionated retail layer on top of **native Odoo 19 Community**: two roles, a clean app
 launcher, server-side guards for refunds and stock moves, and POS screens that survive a busy counter.
@@ -101,3 +101,13 @@ The project was built with an AI agent, and the working rules are part of the re
 ## License
 
 LGPL-3 — see [LICENSE](LICENSE). Odoo Community itself is LGPL-3 by Odoo S.A.
+
+Copyright (C) 2026 odoo-rms contributors.
+
+## Project status
+
+Working and tested on Odoo 19.0 Community, but early: the retail core (roles, guards, POS screens,
+launcher) is in place; invoicing-from-POS, simple customer management and reports come next. The
+`docs/` folder is the live working memory of the project, so it contains the maintainers' roadmap,
+decision log and current state rather than polished user documentation. Nothing here has been used in
+production yet — try it on a disposable database first.
