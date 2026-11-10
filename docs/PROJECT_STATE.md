@@ -19,10 +19,12 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 ## Last completed (newest first, max 8)
 - 2026-11-10: **Camera Scan button on the product form's Barcode field** (D-022). New field widget
   `barcode_scan` (`static/src/fields/barcode_scan_field.{js,xml}`) reuses core's `scanBarcode(env)` dialog and
-  writes the result with `record.update`; `views/product_barcode_scan.xml` sets it on
-  `product.product_template_only_form_view`. Verified: test green on `rms_test4`, widget present in the
-  generated `web.assets_backend` bundle, and in a browser the button renders at the right of the Barcode input
-  and opens the "Barcode Scanner" dialog (the in-app browser had no camera permission). `rms` upgraded and
+  writes the result with `record.update`, then plays a short **beep** (2200 Hz oscillator, one page-wide
+  `AudioContext` created in the click because Chrome only starts audio after a gesture); core has no barcode
+  sound of its own. `views/product_barcode_scan.xml` sets it on `product.product_template_only_form_view`.
+  Verified: 14 tests green on `rms_test4`, widget + beep code present in the generated `web.assets_backend`
+  bundle, and in a browser the button renders at the right of the Barcode input, opens the "Barcode Scanner"
+  dialog, and an `AudioContext` created the same way reports `state === "running"`. `rms` upgraded and
   `odoo` restarted. Limit: template form only, and the camera needs `localhost` or HTTPS.
 - 2026-11-08: Receipt now prints **QR only** (D-021): the portal URL and the 5-character code are hidden by
   `static/src/pos/receipt.scss`. Core's company setting can remove the URL but not the code, which is
