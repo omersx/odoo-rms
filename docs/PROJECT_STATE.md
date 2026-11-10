@@ -17,6 +17,21 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-10: **Opening the app** (D-025). Users install it from the browser as a **PWA** (desktop /
+  home-screen icon, full screen) instead of an OS installer. Two gaps closed: the module only had
+  `static/description/icon.png`, so an installed app got Odoo's purple logo — added
+  `static/description/icon.svg` and the scoped manifest now serves our green shop icon; and the launcher
+  action had no `path`, so `/odoo/apps` did not open it — added `path = "apps"`. Verified in the browser:
+  `/scoped_app?app_id=retail_management&path=apps` returns title *Install Retail Management* plus icon links;
+  the manifest returns `name: Retail Management`, `display: standalone`. **Not re-verified in the browser:**
+  the launcher page itself — this browser session kept a stale POS tour in `localStorage` (`current_tour`)
+  and dropped its session, so pages came back blank; the launcher was verified earlier (D-014). Install
+  needs **HTTPS or `localhost`**.
+- 2026-11-10: **Alert: the burger reordering rule had been deleted** by Odoo's auto-vacuum, which removes
+  manual rules created by the system user (uid 1) when nothing is to order (`stock_orderpoint.py:657-671`).
+  Recreated as `admin` (rule id 3, min 10 / max 50) and proved it survives an explicit
+  `_unlink_processed_orderpoints()` call. **Any rule an agent creates through `odoo shell` will vanish
+  overnight** — create rules from the UI or with `with_user(<real user>)`.
 - 2026-11-10: **Arabic activated** as `ar_001` (generic Arabic, RTL) next to English (D-024). No `ar_SD` exists
   in Odoo 19, so this is the only complete Arabic. Verified `ar001.direction == "rtl"` and, in a browser on
   `rms_test4`, a fully right-to-left UI in Arabic. `admin` stays on English; each user switches in

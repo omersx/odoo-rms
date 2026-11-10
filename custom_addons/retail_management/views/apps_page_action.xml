@@ -4,5 +4,7 @@
     <record id="action_apps_page" model="ir.actions.client">
         <field name="name">Apps</field>
         <field name="tag">retail_management.apps_page</field>
+        <!-- Path so the launcher has a stable URL (/odoo/apps): needed for a PWA icon and bookmarks. -->
+        <field name="path">apps</field>
     </record>
 </odoo>
