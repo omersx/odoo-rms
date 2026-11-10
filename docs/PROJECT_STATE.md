@@ -23,10 +23,11 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
   `static/description/icon.svg` and the scoped manifest now serves our green shop icon; and the launcher
   action had no `path`, so `/odoo/apps` did not open it — added `path = "apps"`. Verified in the browser:
   `/scoped_app?app_id=retail_management&path=apps` returns title *Install Retail Management* plus icon links;
-  the manifest returns `name: Retail Management`, `display: standalone`. **Not re-verified in the browser:**
-  the launcher page itself — this browser session kept a stale POS tour in `localStorage` (`current_tour`)
-  and dropped its session, so pages came back blank; the launcher was verified earlier (D-014). Install
-  needs **HTTPS or `localhost`**.
+  the manifest returns `name: Retail Management`, `display: standalone`. **Owner confirmed the install works on
+  his own Chrome** (2026-11-10): icon on the address bar → Install → app window with no address bar. Install
+  needs **HTTPS or `localhost`** (`127.0.0.1` counts). Remaining nit: the install URL the owner used first was
+  `/odoo/point-of-sale/apps`, so a reinstall should be done from `/odoo/apps` or the `scoped_app` URL above to
+  land on the launcher.
 - 2026-11-10: **Alert: the burger reordering rule had been deleted** by Odoo's auto-vacuum, which removes
   manual rules created by the system user (uid 1) when nothing is to order (`stock_orderpoint.py:657-671`).
   Recreated as `admin` (rule id 3, min 10 / max 50) and proved it survives an explicit
