@@ -17,6 +17,11 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-10: **Arabic activated** as `ar_001` (generic Arabic, RTL) next to English (D-024). No `ar_SD` exists
+  in Odoo 19, so this is the only complete Arabic. Verified `ar001.direction == "rtl"` and, in a browser on
+  `rms_test4`, a fully right-to-left UI in Arabic. `admin` stays on English; each user switches in
+  Preferences. Gotcha recorded: the installed-language list is cached per worker, so **restart `odoo` after
+  activating a language**, else the UI silently stays English.
 - 2026-11-10: **Low-stock warning** set up as native reordering rules with `trigger = "manual"` (D-023): one
   rule on `burger` (WH/Stock, min 10, max 50) as the example; the board is **Inventory → Operations →
   Replenishment** with the **"To Reorder"** filter. Nothing blocks a sale — the owner chose this over a
@@ -133,7 +138,7 @@ None (Phase 4 committed and tagged `phase-4-done`).
   D-011 Discuss hidden · D-012 Contacts hidden · D-013 icon-grid app switcher (template inherit) ·
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
-  trust-on-the-cashier · D-022 camera Scan button on the product Barcode field.
+  trust-on-the-cashier · D-022 camera Scan button on the product Barcode field · D-023 low-stock reordering rules · D-024 Arabic (ar_001).
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only
