@@ -1,82 +1,103 @@
-# RMS — OpenCode project documentation
+# Retail Management System (RMS) for Odoo 19 Community
 
-Documentation pack for building a lightweight Retail Management System on **Odoo 19 Community**
-with OpenCode.
+A thin, opinionated retail layer on top of **native Odoo 19 Community**: two roles, a clean app
+launcher, server-side guards for refunds and stock moves, and POS screens that survive a busy counter.
 
-## Contents
-| File | Purpose |
-|---|---|
-| `AGENTS.md` | Rules OpenCode loads automatically from the repo root. |
-| `INITIAL_PROMPT.md` | First prompt to paste into OpenCode (environment setup + discovery). |
-| `docs/RETAIL_MANAGEMENT_SPEC.md` | What to build: scope, roles, requirements, acceptance tests. |
-| `docs/ARCHITECTURE.md` | Environment facts and verified technical decisions (agent fills in). |
-| `docs/DEVELOPMENT_ROADMAP.md` | Phases, milestones, approval gates, progress log. |
-| `docs/PROJECT_STATE.md` | Live handoff memory: current task, next action, blockers, autonomy level. |
-| `docs/DECISIONS.md`, `docs/BACKLOG.md` | Decision log; parked ideas awaiting your approval. |
-| `docs/AGENT_PLAYBOOK.md`, `docs/HANDOFF_PROMPT.md` | Debug/decide/escalate procedures; prompt for a replacement agent. |
-| `CLAUDE.md` | One-line pointer so other agent tools read `AGENTS.md`. |
-| `docs/WINDOWS_SETUP.md` | Windows dev setup: Docker Desktop **or** WSL2 + Ubuntu. |
-| `docs/OPTIONAL_TOOLS.md` | How to evaluate optional tools such as the Odoo Architect framework. |
-| `docs/DEPLOYMENT.md` | Local setup and hosted-server deployment with the Docker kit. |
-| `docker-compose*.yml`, `deployment/`, `config/`, `scripts/`, `.env.example` | Ready-to-use Docker kit. |
+Not a fork of Odoo. Not a new POS, stock or accounting engine. One small add-on
+(`custom_addons/retail_management`, ~10 files, 14 automated tests) and **no changes to Odoo core**.
 
-## Setup — the agent does most of it
+## What it adds over stock Odoo
 
-**You do once (Windows, about 15 minutes; the agent cannot do these):**
-1. Install **Docker Desktop** and enable Settings → Resources → **WSL integration** for your Ubuntu distro.
-   (If you have no Ubuntu: PowerShell as administrator → `wsl --install -d Ubuntu-24.04`, restart.)
-2. In the **Ubuntu terminal**:
-   ```bash
-   sudo apt update && sudo apt install -y unzip git openssl curl
-   mkdir -p ~/rms && cd ~/rms
-   unzip /mnt/c/Users/<YourWindowsName>/Downloads/RMS_OpenCode_Documentation_v6.zip -d .
-   chmod +x scripts/*.sh
-   ```
-   Keep the project in `~/rms`, **not** under `/mnt/c`.
-3. Install **OpenCode** inside Ubuntu (official instructions at opencode.ai) and connect your model
-   provider.
-4. Start it: `cd ~/rms && opencode`, then paste the prompt from `INITIAL_PROMPT.md`.
+| # | Feature | Where it lives |
+|---|---|---|
+| 1 | **Two roles** — Retail Cashier, Retail Manager — mapped onto native Odoo permission groups | `security/retail_security.xml` |
+| 2 | **Refunds are manager-only**, enforced on the server (order and negative-quantity lines, so POS sync and RPC are covered) | `models/pos_order.py` |
+| 3 | **Stock receipts/moves are manager-only** | `models/stock_picking.py` |
+| 4 | One **Retail Management** app with 6 screens instead of Odoo's full app tree | `views/retail_menu.xml` |
+| 5 | Full-page **icon launcher** (search + tiles) at `/odoo/apps`, reachable from the navbar | `static/src/apps_page/` |
+| 6 | **Installable as an app** (PWA): own icon and name, opens full screen | `static/description/icon.svg` |
+| 7 | POS **payment screen**: methods in two columns, full-size icons, due total clamped for long amounts | `static/src/pos/payment_methods.scss` |
+| 8 | **Receipt prints the QR only** — no portal URL, no short code | `static/src/pos/receipt.scss` |
+| 9 | Payment icons stored at 256 px instead of Odoo's 50 px cap | `models/pos_payment_method.py` |
+| 10 | **Camera Scan button + beep** on the product form's Barcode field | `static/src/fields/barcode_scan_field.*` |
 
-**The agent then does:** preflight checks → creates `.env` and `config/odoo.conf` with random secrets →
-pulls images → creates the database → starts Odoo → records the verified versions in the docs →
-Git commit → discovery → report. It stops for your approval.
+## What it deliberately does not do
 
-**You then:** open http://localhost:8069, **change the default admin password**, read the report, and
-reply "Approved. Proceed with Milestone A, Phase 1 only."
+- No custom order, product, stock, invoice or payment models — those are Odoo's.
+- No custom POS, no offline sync, no accounting or reporting engine.
+- No core overrides; everything is a small inheritance or an asset addition.
+- Hidden menus (Discuss, Contacts) are cosmetic; the security is in groups and server checks.
 
-The agent may only run the actions listed in `AGENTS.md` ("Pre-approved actions"). It must ask for
-`sudo`, Docker/WSL changes, deleting data, production mode, pushing to a remote, or opening ports.
+## Requirements
 
-Manual route (no agent): `scripts/preflight.sh` then `scripts/bootstrap.sh dev`.
+- **Odoo 19.0 Community** (verified on build `19.0-20261015`)
+- PostgreSQL 16
+- Docker + Docker Compose (the dev/prod kit is included), or any existing Odoo you can copy the add-on into
 
-## Autonomy and memory
-- **Autonomy:** the agent decides *how* to build (design, debugging, trade-offs) and records decisions in
-  `docs/DECISIONS.md`. It asks you only for **hard stops** (scope changes, deleting data, security,
-  secrets, sudo/system changes, production, pushing code, tax/legal choices). Ideas that would add
-  features go to `docs/BACKLOG.md` for you to approve. Change the level on the `autonomy:` line of
-  `docs/PROJECT_STATE.md`: **1** stop every phase · **2** stop at milestones (default) · **3** report
-  and continue.
-- **Memory:** `docs/PROJECT_STATE.md` is the live handoff file (where we are, next action, blockers);
-  Git commits and tags are the ground truth. The agent updates both as it works.
-- **Switching agents:** start the new agent in `~/rms` and paste `docs/HANDOFF_PROMPT.md`. It reads the
-  state, verifies it against reality, and continues. `CLAUDE.md` simply points other tools to `AGENTS.md`.
-- **Test it once:** after Phase 0, start a fresh session with `HANDOFF_PROMPT.md` and check that it can
-  say what is done and what is next *without* your help. If not, the state file needs improving.
+## Quick start (development)
 
-## How the work flows
-1. **Phase 0 – Discovery.** The agent inspects only; it reports and waits for you.
-2. **Milestone A – Working core:** module, roles, products/stock, POS. Review before continuing.
-3. **Milestone B – Complete MVP:** invoicing, simple customer management, dashboard/reports.
-4. **Milestone C – Release readiness:** offline tests, backup/restore, hardware, guides.
+```bash
+git clone <this-repo> ~/rms && cd ~/rms
+scripts/bootstrap.sh dev        # preflight, .env + config with random secrets, DB, Odoo up
+docker compose run --rm odoo odoo -d rms -i retail_management --stop-after-init
+docker compose restart odoo
+```
 
-After each gate, read the agent's report (verified facts vs assumptions, tests run, limitations), then
-reply "approved, continue with Milestone X" or give corrections.
+Then open `http://localhost:8069` and change the admin password — a database created from the
+command line starts with a default one.
 
-## Tips
-- Begin with plain OpenCode plus `AGENTS.md`. Add optional tools (Superpowers, Planning with Files,
-  Odoo Architect Framework) only if you actually need them and they are installed and discoverable.
-- Keep the spec as the single source of scope. Change scope by editing the spec yourself, not by
-  chatting; then tell the agent to re-read it.
-- Commit to Git after each approved phase so you can roll back.
-- If the agent seems to guess model/field names, tell it: "verify in the Odoo 19 source first."
-- Have a qualified local adviser review taxes and invoicing before real transactions.
+## Add to an existing Odoo
+
+Copy `custom_addons/retail_management` into an add-ons path, add that path to `addons_path`, then:
+
+```bash
+odoo -d <db> -i retail_management --stop-after-init     # first install
+odoo -d <db> -u retail_management --stop-after-init     # upgrade
+```
+
+## Tests
+
+```bash
+docker compose run --rm odoo odoo -d rms_test -i retail_management --test-tags /retail_management --stop-after-init
+```
+
+They cover the access rules (cashier vs manager): refunds, negative lines, stock validation, and the
+group mapping. Use a disposable database — the test run creates and deletes POS orders.
+
+## Repository layout
+
+```
+custom_addons/retail_management/   the add-on (models, views, security, assets, tests)
+docker-compose.yml                 base compose file
+docker-compose.dev.yml             dev overlay (localhost only)
+docker-compose.prod.yml            prod overlay (Caddy + HTTPS, Odoo not published)
+config/                            Odoo config templates (real config is git-ignored)
+scripts/                           preflight, bootstrap, setup, backup, restore
+deployment/                        Caddyfile
+docs/                              spec, architecture, roadmap, decisions, deployment, agent workflow
+```
+
+## Customizing for another industry
+
+Keep **one base module** and add thin per-industry modules that depend on it — never fork the repo
+per customer. Most industry differences are configuration, not code. See
+[`docs/INDUSTRY_VARIANTS.md`](docs/INDUSTRY_VARIANTS.md).
+
+## Deployment
+
+`docs/DEPLOYMENT.md` covers a hosted server and an always-on local store machine, both with HTTPS via
+Caddy, plus backup/restore and an update procedure.
+
+## Documentation
+
+`docs/RETAIL_MANAGEMENT_SPEC.md` (scope) · `docs/ARCHITECTURE.md` (verified technical facts) ·
+`docs/DEVELOPMENT_ROADMAP.md` (phases) · `docs/DECISIONS.md` (every non-trivial decision, with
+alternatives) · `docs/PROJECT_STATE.md` (live maintainer state).
+
+The project was built with an AI agent, and the working rules are part of the repo: `AGENTS.md`
+(autonomy, hard stops, invariants), `docs/AGENT_PLAYBOOK.md` (debug/decide/escalate),
+`docs/HANDOFF_PROMPT.md` (hand-over prompt). Adapt or delete them if you work differently.
+
+## License
+
+LGPL-3 — see [LICENSE](LICENSE). Odoo Community itself is LGPL-3 by Odoo S.A.

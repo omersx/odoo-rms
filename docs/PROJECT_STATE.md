@@ -17,6 +17,14 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-10: **Repo prepared for publishing** (D-026): LGPL-3 `LICENSE`, a product `README.md` (features,
+  requirements, quick start, tests, layout, variants, deployment, license), and
+  `docs/INDUSTRY_VARIANTS.md` (one base module + thin per-industry add-ons, configuration before code,
+  what must never be copied into a variant). Secret scan of all 53 tracked files: `.env` and
+  `config/odoo.conf` are ignored and untracked, templates hold only placeholders, no keys, dumps, customer
+  data or brand logos. **Nothing was pushed** — the repo still has no remote; publishing is the owner's
+  decision (Hard stop). Still to decide: public vs private, and whether the shop's business context in
+  `DECISIONS.md` / `PROJECT_STATE.md` should stay.
 - 2026-11-10: **Opening the app** (D-025). Users install it from the browser as a **PWA** (desktop /
   home-screen icon, full screen) instead of an OS installer. Two gaps closed: the module only had
   `static/description/icon.png`, so an installed app got Odoo's purple logo — added
