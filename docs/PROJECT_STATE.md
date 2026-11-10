@@ -17,6 +17,11 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-10: **Low-stock warning** set up as native reordering rules with `trigger = "manual"` (D-023): one
+  rule on `burger` (WH/Stock, min 10, max 50) as the example; the board is **Inventory → Operations →
+  Replenishment** with the **"To Reorder"** filter. Nothing blocks a sale — the owner chose this over a
+  custom zero-stock block (native Odoo 19 Community has no such setting, verified). Min/max numbers are
+  placeholders; the owner still has to give real ones per product.
 - 2026-11-10: **Camera Scan button on the product form's Barcode field** (D-022). New field widget
   `barcode_scan` (`static/src/fields/barcode_scan_field.{js,xml}`) reuses core's `scanBarcode(env)` dialog and
   writes the result with `record.update`, then plays a short **beep** (2200 Hz oscillator, one page-wide
