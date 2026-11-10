@@ -17,14 +17,21 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-10: **Verified from scratch**: cloned the repo to `/tmp/rms-clone`, ran `scripts/setup.sh dev`
+  (correct `.env` + `config/odoo.conf`), and `docker compose config` validates — so a stranger can start
+  from the README. Then a **clean install on a brand-new disposable database** (`rms_ci`): module installs,
+  **14 tests, 0 failed / 0 errors**. That test caught a real bug: the `path = "apps"` added to the launcher
+  action minutes earlier **breaks any fresh install** ("Path to show in the URL must be unique!" — core's
+  Apps action owns `apps`), so the field was removed (D-025 corrected); the launcher URL stays
+  `/odoo/action-retail_management.action_apps_page`, verified rendering in the browser.
 - 2026-11-10: **Repo prepared for publishing** (D-026): LGPL-3 `LICENSE`, a product `README.md` (features,
   requirements, quick start, tests, layout, variants, deployment, license), and
   `docs/INDUSTRY_VARIANTS.md` (one base module + thin per-industry add-ons, configuration before code,
   what must never be copied into a variant). Secret scan of all 53 tracked files: `.env` and
   `config/odoo.conf` are ignored and untracked, templates hold only placeholders, no keys, dumps, customer
-  data or brand logos. **Nothing was pushed** — the repo still has no remote; publishing is the owner's
-  decision (Hard stop). Still to decide: public vs private, and whether the shop's business context in
-  `DECISIONS.md` / `PROJECT_STATE.md` should stay.
+  data or brand logos. Repo renamed **odoo-rms** in the README and the module author set to
+  `odoo-rms contributors`. **Nothing was pushed** — the repo still has no remote; publishing is the owner's
+  decision (Hard stop).
 - 2026-11-10: **Opening the app** (D-025). Users install it from the browser as a **PWA** (desktop /
   home-screen icon, full screen) instead of an OS installer. Two gaps closed: the module only had
   `static/description/icon.png`, so an installed app got Odoo's purple logo — added

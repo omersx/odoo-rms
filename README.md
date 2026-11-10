@@ -14,7 +14,7 @@ Not a fork of Odoo. Not a new POS, stock or accounting engine. One small add-on
 | 2 | **Refunds are manager-only**, enforced on the server (order and negative-quantity lines, so POS sync and RPC are covered) | `models/pos_order.py` |
 | 3 | **Stock receipts/moves are manager-only** | `models/stock_picking.py` |
 | 4 | One **Retail Management** app with 6 screens instead of Odoo's full app tree | `views/retail_menu.xml` |
-| 5 | Full-page **icon launcher** (search + tiles) at `/odoo/apps`, reachable from the navbar | `static/src/apps_page/` |
+| 5 | Full-page **icon launcher** (search + tiles), opened from the navbar Apps button | `static/src/apps_page/` |
 | 6 | **Installable as an app** (PWA): own icon and name, opens full screen | `static/description/icon.svg` |
 | 7 | POS **payment screen**: methods in two columns, full-size icons, due total clamped for long amounts | `static/src/pos/payment_methods.scss` |
 | 8 | **Receipt prints the QR only** — no portal URL, no short code | `static/src/pos/receipt.scss` |
