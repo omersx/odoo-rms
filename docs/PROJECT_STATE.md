@@ -4,7 +4,7 @@
 > new agent reads. Detailed history belongs in Git, `DECISIONS.md` and the roadmap, not here.
 > If this file disagrees with the repository or running system, trust reality and fix this file.
 
-**Last updated:** 2026-11-08 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
+**Last updated:** 2026-11-10 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
 **autonomy:** 2          <!-- owner edits: 1 = guided, 2 = standard (default), 3 = high -->
 
 ## Where we are
@@ -17,6 +17,13 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-10: **Camera Scan button on the product form's Barcode field** (D-022). New field widget
+  `barcode_scan` (`static/src/fields/barcode_scan_field.{js,xml}`) reuses core's `scanBarcode(env)` dialog and
+  writes the result with `record.update`; `views/product_barcode_scan.xml` sets it on
+  `product.product_template_only_form_view`. Verified: test green on `rms_test4`, widget present in the
+  generated `web.assets_backend` bundle, and in a browser the button renders at the right of the Barcode input
+  and opens the "Barcode Scanner" dialog (the in-app browser had no camera permission). `rms` upgraded and
+  `odoo` restarted. Limit: template form only, and the camera needs `localhost` or HTTPS.
 - 2026-11-08: Receipt now prints **QR only** (D-021): the portal URL and the 5-character code are hidden by
   `static/src/pos/receipt.scss`. Core's company setting can remove the URL but not the code, which is
   unconditional in `order_receipt.xml:78-92`. Verified the rule is in the loaded POS bundle and both children
@@ -84,6 +91,10 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 - 2026-11-01: Phase 0 discovery + Stage 0 environment (Docker Desktop, Odoo 19.0-20261015).
 
 ## Next action (concrete)
+**Owner:** try the new Scan button. *Retail Management → Products →* open a product (or **New**) *→* the
+**Barcode** field has a barcode icon at its right edge. Click it, allow the camera when Chrome asks, hold a
+product barcode in front of the webcam — the field fills with the digits (nothing is saved until **Save**).
+
 **Owner:** run the Milestone A acceptance scenarios in the browser at http://localhost:8069:
 1. Log in as the Retail Manager; open *Retail Management* → *Point of Sale* → *Main Register* → *Open*.
 2. Sell a product for cash, check the receipt, then close the session (cash counted).
@@ -115,7 +126,7 @@ None (Phase 4 committed and tagged `phase-4-done`).
   D-011 Discuss hidden · D-012 Contacts hidden · D-013 icon-grid app switcher (template inherit) ·
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
-  trust-on-the-cashier.
+  trust-on-the-cashier · D-022 camera Scan button on the product Barcode field.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only

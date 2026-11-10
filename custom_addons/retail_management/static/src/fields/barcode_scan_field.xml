@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="retail_management.BarcodeScanField" t-inherit="web.CharField" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_field_input_buttons')]" position="inside">
+            <button t-if="canScan"
+                class="btn m-0 py-0 px-2"
+                type="button"
+                title="Scan with camera"
+                aria-label="Scan with camera"
+                t-on-click="onScanClick">
+                <i class="fa fa-barcode"/>
+            </button>
+        </xpath>
+    </t>
+
+</templates>

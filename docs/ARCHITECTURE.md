@@ -384,6 +384,24 @@ Consequences verified: a product priced `100.00` computes `total_included = 100.
 `account.tax.country_id` is `@api.depends('company_id')` only — moving the company leaves the old
 country on the taxes, so they must be re-pointed (with a matching tax group) by hand.
 
+### 7.3 Product barcode entry — camera widget (2026-11-10, D-022)
+
+Verified facts:
+
+- Core Odoo 19 has a camera barcode dialog: `scanBarcode(env, facingMode)` in
+  `@web/core/barcode/barcode_dialog`, backed by `BarcodeDetector` or a ZXing fallback
+  (`web/static/src/core/barcode/barcode_video_scanner.js:54-58`). Core exposes it on many2one fields, the
+  POS product/orders screens, Events check-in and Attendance — **not** on the product form's `Barcode`
+  field, and its many2one button is gated on `isMobileOS()` (`many2one.js:214-217`), so desktop got nothing.
+- `product.template.barcode` is `compute='_compute_barcode', inverse='_set_barcode'` — a scanned value
+  saves to the single variant exactly like a typed one.
+- `retail_management` registers field widget `barcode_scan` (extends `web.CharField`, adds one button into
+  `.o_field_input_buttons`) and sets it on `product.product_template_only_form_view`.
+- `getUserMedia` needs a **secure context**: `localhost`/`127.0.0.1` or HTTPS. Over `http://<lan-ip>` the
+  browser blocks the camera, so the button works on the dev PC but not from a phone on the LAN IP.
+- A USB/Bluetooth HID scanner still fills the field with no button: core's background barcode service
+  ignores keystrokes aimed at editable elements (`barcodes/static/src/barcode_service.js:90-96`).
+
 ## 8. Inventory architecture — verified on `rms_test4` (2026-11-01)
 
 Standard Odoo workflows only; the add-on adds no inventory model. Verified end to end through the ORM:

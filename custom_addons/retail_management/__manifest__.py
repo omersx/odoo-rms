@@ -1,6 +1,6 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.8.0",
+    "version": "19.0.1.9.0",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "RMS",
     "license": "LGPL-3",
@@ -11,6 +11,7 @@
         "data/hide_apps.xml",
         "views/retail_menu.xml",
         "views/apps_page_action.xml",
+        "views/product_barcode_scan.xml",
     ],
     "assets": {
         "web.assets_backend": [
@@ -18,6 +19,9 @@
             "retail_management/static/src/apps_page/apps_page.js",
             "retail_management/static/src/xml/apps_page.xml",
             "retail_management/static/src/xml/apps_button.xml",
+            # Product form: camera Scan button on the Barcode field (D-022)
+            "retail_management/static/src/fields/barcode_scan_field.js",
+            "retail_management/static/src/fields/barcode_scan_field.xml",
         ],
         # POS payment screen: two columns, full-size icons (D-019)
         # POS receipt: QR only, no portal URL or 5-char code (D-021)
