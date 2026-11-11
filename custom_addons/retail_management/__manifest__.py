@@ -10,6 +10,7 @@
         "security/retail_security.xml",
         "data/hide_apps.xml",
         "views/retail_menu.xml",
+        "views/inventory_app_default.xml",
         "views/apps_page_action.xml",
         "views/product_barcode_scan.xml",
     ],

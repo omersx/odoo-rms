@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Owner's request: the Inventory app tile must open the plain stock list (Physical Inventory),
+         not the Inventory Overview cards. Odoo opens a root menu's action when the app is clicked;
+         without one it fell through to the first child ("Overview").
+         The Overview stays reachable from the Inventory menu bar, so nothing is lost.
+         Delete this file from the manifest to get the stock behaviour back. -->
+    <record id="stock.menu_stock_root" model="ir.ui.menu">
+        <field name="action" ref="stock.action_view_quants"/>
+    </record>
+</odoo>

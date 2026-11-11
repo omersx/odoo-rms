@@ -22,7 +22,7 @@
     <menuitem id="menu_retail_inventory"
               name="Inventory"
               parent="menu_retail_root"
-              action="stock.stock_picking_type_action"
+              action="stock.action_view_quants"
               groups="stock.group_stock_user"
               sequence="30"/>
 
