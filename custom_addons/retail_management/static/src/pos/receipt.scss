@@ -10,18 +10,12 @@
     display: none !important;
 }
 
-/* Printing (D-029). Core only sets `@page { padding: 15px }`, so the browser fell back to A4 and added
-   its own header/footer (date, page title, URL). Declaring the paper size makes the print dialog open
-   as a receipt instead of a sheet; margin 0 also drops the browser's header/footer, which it only
-   prints inside the page margins. Printers with 58 mm paper must change 80mm to 58mm here. */
+/* Printing (D-029). Margins belong to the browser: it prints its date/title/URL header and footer
+   inside the page margins only, so `margin: 0` is what removes them from the paper. Nothing else here
+   is touched — the paper size comes from the print dialog and the receipt keeps core's placement
+   (`.render-container` at 10px, centred by core's `margin-left/right: auto`). */
 @media print {
     @page {
-        size: 80mm 297mm;
         margin: 0;
-    }
-
-    .render-container {
-        top: 0 !important;
-        left: 0 !important;
     }
 }
