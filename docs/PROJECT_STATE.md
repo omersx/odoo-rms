@@ -4,7 +4,7 @@
 > new agent reads. Detailed history belongs in Git, `DECISIONS.md` and the roadmap, not here.
 > If this file disagrees with the repository or running system, trust reality and fix this file.
 
-**Last updated:** 2026-11-10 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
+**Last updated:** 2026-11-13 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
 **autonomy:** 2          <!-- owner edits: 1 = guided, 2 = standard (default), 3 = high -->
 
 ## Where we are
@@ -17,6 +17,15 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-13: **POS receipt gets a "Save as PDF" button** (D-028) — inherited template only, reuses
+  core `doFullPrint`, so `nb_print` counting and the printer fallback stay native. Next to it, the
+  **Inventory app tile now opens the plain stock list** (`stock.action_view_quants`) instead of the
+  Overview cards, at the owner's request (D-027); `views/inventory_app_default.xml` is the only file.
+  Verified: the tile href became `/odoo/stock-locations` and renders a list; the POS asset bundle
+  rebuilt with our template inside and the `hasclass` selector resolves to exactly one button (lxml
+  check against the core template). **Not verified visually:** the POS UI does not render in the
+  automated browser (blank page on `/pos/ui/13/login` even on a fresh config), so the button was not
+  clicked — the owner should confirm on the receipt screen.
 - 2026-11-10: **Verified from scratch**: cloned the repo to `/tmp/rms-clone`, ran `scripts/setup.sh dev`
   (correct `.env` + `config/odoo.conf`), and `docker compose config` validates — so a stranger can start
   from the README. Then a **clean install on a brand-new disposable database** (`rms_ci`): module installs,
