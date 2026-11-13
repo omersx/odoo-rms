@@ -29,8 +29,6 @@
         "point_of_sale._assets_pos": [
             "retail_management/static/src/pos/payment_methods.scss",
             "retail_management/static/src/pos/receipt.scss",
-            # Receipt screen: "Save as PDF" button (owner request, D-028)
-            "retail_management/static/src/xml/receipt_screen.xml",
         ],
     },
     "application": True,
