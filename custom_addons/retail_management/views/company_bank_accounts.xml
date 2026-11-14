@@ -17,6 +17,7 @@
                         <field name="bank_ids" nolabel="1" colspan="2"
                                context="{'default_partner_id': partner_id}">
                             <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
                                 <field name="bank_id"/>
                                 <field name="acc_number"/>
                                 <field name="acc_holder_name"/>
