@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Company bank accounts page (D-030).
+    <!-- Company page for invoice payment details (D-030).
 
          The accounts printed in the invoice "Payment methods" block are the company's own bank
          accounts, but this build only shows them on the company's *contact* form (Contacts is
-         hidden), so there is nowhere for the shop to type them. One editable page fixes that. -->
+         hidden), so there is nowhere for the shop to type them. Same page holds the two wordings. -->
     <record id="view_company_form_bank_accounts" model="ir.ui.view">
         <field name="name">res.company.form.bank.accounts</field>
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='general_info']" position="after">
-                <page string="Bank Accounts" name="bank_accounts">
+                <page string="Invoices" name="bank_accounts">
                     <field name="partner_id" invisible="1"/>
-                    <field name="bank_ids" context="{'default_partner_id': partner_id}">
-                        <list editable="bottom">
-                            <field name="bank_id"/>
-                            <field name="acc_number"/>
-                            <field name="acc_holder_name"/>
-                        </list>
-                    </field>
+                    <group string="Bank Accounts">
+                        <field name="bank_ids" nolabel="1" colspan="2"
+                               context="{'default_partner_id': partner_id}">
+                            <list editable="bottom">
+                                <field name="bank_id"/>
+                                <field name="acc_number"/>
+                                <field name="acc_holder_name"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Payment block on invoices">
+                        <field name="rms_payment_title"/>
+                        <field name="rms_payment_note"/>
+                    </group>
                 </page>
             </xpath>
         </field>

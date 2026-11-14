@@ -20,10 +20,11 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 - 2026-11-14: **Invoice payment block** (D-030) — customer invoices now print **طرق الدفع**, one line
   per company bank account (`بنكك · رقم الحساب : … · باسم …`) followed by
   `ارسل اشعار الدفع في الرقم واتساب <company phone>`, instead of core's "Payment Communication" line.
-  Data lives in the database, not in code; `views/company_bank_accounts.xml` adds the **Bank Accounts**
-  page to the company form so the numbers can be typed (Contacts is hidden). Verified by rendering
-  invoice 1 of `rms_test4` as HTML. **Owner still has to enter the real wallet numbers on `rms`** —
-  `rms_test4` only has demo ones. Also on 2026-11-14: the POS "Save as PDF" button was removed
+  Data lives in the database, not in code; `views/company_bank_accounts.xml` adds the **Invoices** page
+  to the company form (bank accounts + the two wordings `rms_payment_title` / `rms_payment_note`) so
+  nothing needs a code edit. Verified by rendering invoice 1 of `rms_test4` (styled HTML) and invoice
+  28 of `rms` (HTML text). **Owner still has to enter the real wallet numbers on `rms`** — `rms_test4`
+  only has demo ones, so `rms` prints just the WhatsApp line for now. Also on 2026-11-14: the POS "Save as PDF" button was removed
   (D-028 reversed, owner's call) and the receipt print CSS was reduced to `@page { margin: 0 }` so
   the browser header/footer stay hidden without moving the ticket (D-029).
 - 2026-11-13: **POS receipt gets a "Save as PDF" button** (D-028) — inherited template only, reuses

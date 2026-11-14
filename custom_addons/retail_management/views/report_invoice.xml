@@ -5,21 +5,25 @@
          Core prints "Payment Communication: INV/2026/00001" plus, if the invoice has one, "on this
          account: <account>" — one account, no wallet names. The shop takes several wallets, so that
          line is hidden and replaced by a list built from the company's own bank accounts
-         (Settings → Companies → Bank Accounts), followed by the WhatsApp number where the customer
-         sends the transfer notice. Numbers live in the database, never in this file.
+         (Settings → Companies → Invoices tab), followed by the phone number where the customer sends
+         the transfer notice. All content is data: accounts, holder names, phone, and the two
+         wordings (`rms_payment_title` / `rms_payment_note`). Nothing about a shop lives in this file,
+         and a variant module can inherit this template to restyle it.
 
          The block is added after the totals rather than swapped in place, and core's line is hidden
          with CSS: an xpath that *deletes* its anchor cannot be reloaded on the next upgrade. -->
     <template id="report_invoice_payment_methods" inherit_id="account.report_invoice_document">
+        <!-- Inline style, not a CSS class: the report must hide this line even if the report stylesheet
+             fails to load (it does in some renders, e.g. from the shell). -->
         <xpath expr="//p[@name='payment_communication']" position="attributes">
-            <attribute name="class" add="d-none" separator=" "/>
+            <attribute name="style">display: none;</attribute>
         </xpath>
 
         <xpath expr="//div[@id='right-elements']/parent::*" position="after">
             <div class="mb-3" name="payment_methods"
                  t-if="o.move_type == 'out_invoice' and (o.company_id.bank_ids or o.company_id.partner_id.phone)">
                 <t t-if="o.company_id.bank_ids">
-                    <p class="mb-1 fw-bold">طرق الدفع</p>
+                    <p class="mb-1 fw-bold" t-out="o.company_id.rms_payment_title or 'طرق الدفع'"/>
                     <!-- dir=ltr: in an RTL document "1234 5678 90" otherwise prints as "90 5678 1234" -->
                     <p class="mb-0" t-foreach="o.company_id.bank_ids" t-as="account">
                         <t t-if="account.bank_id"><t t-out="account.bank_id.name"/> · </t>
@@ -28,7 +32,7 @@
                     </p>
                 </t>
                 <p class="mb-0" t-if="o.company_id.partner_id.phone">
-                    ارسل اشعار الدفع في الرقم واتساب
+                    <t t-out="o.company_id.rms_payment_note"/>
                     <span dir="ltr" class="fw-bold" t-out="o.company_id.partner_id.phone"/>
                 </p>
             </div>
