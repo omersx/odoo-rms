@@ -4,7 +4,7 @@
 > new agent reads. Detailed history belongs in Git, `DECISIONS.md` and the roadmap, not here.
 > If this file disagrees with the repository or running system, trust reality and fix this file.
 
-**Last updated:** 2026-11-13 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
+**Last updated:** 2026-11-14 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
 **autonomy:** 2          <!-- owner edits: 1 = guided, 2 = standard (default), 3 = high -->
 
 ## Where we are
@@ -17,6 +17,15 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-14: **Invoice payment block** (D-030) — customer invoices now print **طرق الدفع**, one line
+  per company bank account (`بنكك · رقم الحساب : … · باسم …`) followed by
+  `ارسل اشعار الدفع في الرقم واتساب <company phone>`, instead of core's "Payment Communication" line.
+  Data lives in the database, not in code; `views/company_bank_accounts.xml` adds the **Bank Accounts**
+  page to the company form so the numbers can be typed (Contacts is hidden). Verified by rendering
+  invoice 1 of `rms_test4` as HTML. **Owner still has to enter the real wallet numbers on `rms`** —
+  `rms_test4` only has demo ones. Also on 2026-11-14: the POS "Save as PDF" button was removed
+  (D-028 reversed, owner's call) and the receipt print CSS was reduced to `@page { margin: 0 }` so
+  the browser header/footer stay hidden without moving the ticket (D-029).
 - 2026-11-13: **POS receipt gets a "Save as PDF" button** (D-028) — inherited template only, reuses
   core `doFullPrint`, so `nb_print` counting and the printer fallback stay native. Next to it, the
   **Inventory app tile now opens the plain stock list** (`stock.action_view_quants`) instead of the

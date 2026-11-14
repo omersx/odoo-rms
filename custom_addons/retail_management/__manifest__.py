@@ -13,6 +13,8 @@
         "views/inventory_app_default.xml",
         "views/apps_page_action.xml",
         "views/product_barcode_scan.xml",
+        "views/company_bank_accounts.xml",
+        "views/report_invoice.xml",
     ],
     "assets": {
         "web.assets_backend": [
