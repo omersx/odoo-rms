@@ -17,6 +17,13 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-14: **Invoice PDFs are styled again** (D-033 amended, D-034) — the first backfill came out plain
+  because Odoo only passes its asset cookie to wkhtmltopdf inside a web request; rendering from `odoo shell`
+  (or a cron) skips it. The five `rms` invoices were regenerated with `dbfilter = ^rms$` set temporarily (so
+  asset URLs resolve without a session) and the setting was removed afterwards; verified by the embedded fonts
+  (Tajawal, not DejaVu/Nimbus). Also found and fixed while testing in the UI: **Odoo 19 refuses to post a
+  customer invoice** while the company's bank account is untrusted, so both wallets are now marked *Send Money*
+  (`allow_out_payment`) — without that, the owner could not confirm an invoice at all.
 - 2026-11-14: **Portal prints the real invoice, not "فاتورة شكلية"** (D-033) — core's portal renders a
   proforma preview for any invoice without an official PDF attached (`invoice_pdf_report_id`), which made
   paid invoices look like drafts. Posting a customer invoice/credit note now renders the standard report

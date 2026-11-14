@@ -20,6 +20,10 @@ class AccountMove(models.Model):
         The customer portal shows a *proforma* preview ("فاتورة شكلية") for any invoice that has no
         official PDF attached — including paid ones, which reads like a draft. Attaching the standard
         report here makes the portal print the real invoice. Posting must never fail because of it.
+
+        Caveat: Odoo only passes its asset cookie to wkhtmltopdf when it renders inside a web request
+        (`ir_actions_report.py`, "if request and request.db"). A render from `odoo shell` or a cron has
+        no cookie, so the stylesheet 404s and the PDF comes out plain. Only generate from the UI.
         """
         report = self.env.ref("account.account_invoices", raise_if_not_found=False)
         if not report:
