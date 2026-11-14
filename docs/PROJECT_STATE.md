@@ -17,6 +17,10 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-14: **Document footer** set to `شكراً لزيارتكم · نتشرف بخدمتكم دائماً` — data only, no code:
+  `res.company.report_footer` (invoices, edited in **Settings → Companies → Configure Document Layout →
+  Footer**) and `pos.config.receipt_footer` (POS receipt, a separate field on the till config). Set on
+  `rms` and `rms_test4`; verified printed at the bottom of a rendered invoice.
 - 2026-11-14: **`اسم العميل` label on invoices** (D-031) — the recipient block printed with no heading,
   which read as the shop's own details; a bold `اسم العميل` now sits above it. Three xpaths are needed
   because core sets the `address` variable inside three different branches and an xpath matches only
