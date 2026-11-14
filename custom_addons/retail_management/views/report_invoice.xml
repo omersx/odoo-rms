@@ -38,4 +38,23 @@
             </div>
         </xpath>
     </template>
+
+    <!-- A label above the recipient block: core prints the customer's name and address with no
+         heading at all, which reads as the shop's own details on a printed invoice.
+
+         Three branches, three specs: core sets the `address` variable inside whichever of
+         `address_not_same_as_shipping` / `address_same_as_shipping` / `no_shipping` applies, and an
+         xpath only ever matches its first node. Labelled here (invoice template) rather than in
+         `web.address_layout`, so other reports keep core's unlabelled block. -->
+    <template id="report_invoice_customer_label" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@name='address_not_same_as_shipping']/t/address" position="before">
+            <div class="fw-bold">اسم العميل</div>
+        </xpath>
+        <xpath expr="//div[@name='address_same_as_shipping']/t/address" position="before">
+            <div class="fw-bold">اسم العميل</div>
+        </xpath>
+        <xpath expr="//div[@name='no_shipping']/t/address" position="before">
+            <div class="fw-bold">اسم العميل</div>
+        </xpath>
+    </template>
 </odoo>
