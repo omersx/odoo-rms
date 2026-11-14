@@ -57,4 +57,18 @@
             <div class="fw-bold">اسم العميل</div>
         </xpath>
     </template>
+
+    <!-- "Paid on 14/11/2026 using Bankak" (D-032).
+
+         Core prints only the date and the amount of each payment; the wallet the money arrived in is
+         invisible on paper, so the customer cannot check it against their transfer. Each wallet is its
+         own journal here (Bankak, Fawry, O-Cash, Amen…), so the journal name is the wallet name: renaming
+         a journal renames what prints, no code change. -->
+    <template id="report_invoice_paid_with" inherit_id="account.report_invoice_document">
+        <xpath expr="//i[hasclass('oe_payment_label')]" position="inside">
+            <t t-if="payment_vals.get('journal_name')">
+                 باستخدام <span t-out="payment_vals['journal_name']"/>
+            </t>
+        </xpath>
+    </template>
 </odoo>

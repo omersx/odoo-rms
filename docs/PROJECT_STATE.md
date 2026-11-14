@@ -17,6 +17,10 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-14: **"Paid via <wallet>" on invoices** (D-032) — core printed only `تم الدفع في <date>`, so a
+  paid invoice never showed *which* wallet received the money. The payment cell now ends with
+  ` باستخدام <journal_name>`; each wallet is its own journal, so renaming a journal renames what prints.
+  Verified on `rms` invoice 28 (Bankak journal): `تم الدفع في 14/11/2026 باستخدام Bankak`.
 - 2026-11-14: **Document footer** set to `شكراً لزيارتكم · نتشرف بخدمتكم دائماً` — data only, no code:
   `res.company.report_footer` (invoices, edited in **Settings → Companies → Configure Document Layout →
   Footer**) and `pos.config.receipt_footer` (POS receipt, a separate field on the till config). Set on
