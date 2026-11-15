@@ -1,6 +1,6 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.17.0",
+    "version": "19.0.1.18.0",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "odoo-rms contributors",
     "license": "LGPL-3",
@@ -10,6 +10,7 @@
     "data": [
         "security/retail_security.xml",
         "data/hide_apps.xml",
+        "views/stock_quant_readonly.xml",
         "views/retail_menu.xml",
         "views/inventory_app_default.xml",
         "views/apps_page_action.xml",

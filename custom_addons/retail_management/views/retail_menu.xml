@@ -25,8 +25,8 @@
     <menuitem id="menu_retail_inventory"
               name="Inventory"
               parent="menu_retail_root"
-              action="stock.action_view_quants"
-              groups="stock.group_stock_user"
+              action="retail_management.action_retail_quants"
+              groups="retail_management.group_retail_cashier"
               sequence="30"/>
 
     <menuitem id="menu_retail_invoicing"

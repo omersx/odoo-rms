@@ -50,6 +50,20 @@ class TestRetailSecurity(TransactionCase):
         with self.assertRaises(AccessError):
             quant.with_user(self.cashier).write({"inventory_quantity": 5})
 
+    def test_cashier_reads_on_hand_quantities(self):
+        """Inventory is read-only for the cashier: he sees quantities, he cannot change them (D-044)."""
+        quant = self.env["stock.quant"].create(
+            {
+                "product_id": self.product.id,
+                "location_id": self.env.ref("stock.stock_location_stock").id,
+                "quantity": 7,
+            }
+        )
+        self.assertEqual(quant.with_user(self.cashier).read(["quantity"])[0]["quantity"], 7)
+        menu = self.env.ref("retail_management.menu_retail_inventory")
+        self.assertEqual(menu.action, self.env.ref("retail_management.action_retail_quants"))
+        self.assertIn(menu.id, self.env["ir.ui.menu"].with_user(self.cashier)._visible_menu_ids())
+
     def test_cashier_can_create_partner(self):
         # Owner's decision (D-039): the cashier adds customers at the till.
         partner = self.env["res.partner"].with_user(self.cashier).create({"name": "Walk-in Customer"})

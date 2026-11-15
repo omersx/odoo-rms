@@ -27,6 +27,7 @@ msgstr "المنتجات"
 
 #. module: retail_management
 #: model:ir.ui.menu,name:retail_management.menu_retail_inventory
+#: model:ir.actions.act_window,name:retail_management.action_retail_quants
 msgid "Inventory"
 msgstr "المخزون"
 

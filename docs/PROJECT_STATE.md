@@ -20,6 +20,13 @@ customers, invoicing at the till *and* from the back office, and the shop app is
 the trade-off that the cashier can also reach journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **The cashier can read stock quantities** (D-044) — *Retail Management → المخزون* is now a
+  read-only on-hand list (product, location, quantity, reserved, available). No new rights were needed:
+  stock already grants quant **read** to every internal user (`access_stock_quant_all`, `1,0,0,0`); the menu
+  and the core action were merely gated on `stock.group_stock_user`, which also allows editing stock — so a
+  small `act_window` + non-editable list replaces them (`views/stock_quant_readonly.xml`). Verified in the
+  cashier's browser: 3 rows, Arabic headers, no New button, no editable cells; writes still denied. Module
+  19.0.1.18.0, both DBs upgraded. Tests: 22, 0 failed (`test_cashier_reads_on_hand_quantities`).
 - 2026-11-15: **The shop app speaks Arabic** (D-043) — new `i18n/ar_001.po` translates our own labels, which
   were the only English left in the cashier's navbar: *إدارة البيع*, *نقطة البيع*, *المنتجات*, *المخزون*,
   *الفوترة*, *العملاء*, *الإعدادات*, launcher *التطبيقات*. Server-side names verified with `lang=ar_001` on
@@ -309,9 +316,9 @@ None.
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
   trust-on-the-cashier · D-022 camera Scan button on the product Barcode field · D-023 low-stock reordering rules · D-024 Arabic (ar_001).
-  D-025…D-043 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights,
-  launcher menu refresh, Arabic labels) are listed in `DECISIONS.md`; D-038…D-043 are the ones to read for the
-  cashier and the app list.
+  D-025…D-044 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights,
+  launcher menu refresh, Arabic labels, read-only stock) are listed in `DECISIONS.md`; D-038…D-044 are the ones
+  to read for the cashier and the app list.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only
