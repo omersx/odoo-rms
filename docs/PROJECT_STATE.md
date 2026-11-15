@@ -4,7 +4,7 @@
 > new agent reads. Detailed history belongs in Git, `DECISIONS.md` and the roadmap, not here.
 > If this file disagrees with the repository or running system, trust reality and fix this file.
 
-**Last updated:** 2026-11-14 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
+**Last updated:** 2026-11-15 · OpenCode 1.19.1 · model `opencode/deepseek-v4.1-flash-free`
 **autonomy:** 2          <!-- owner edits: 1 = guided, 2 = standard (default), 3 = high -->
 
 ## Where we are
@@ -12,11 +12,22 @@
 - Roadmap reference: `docs/DEVELOPMENT_ROADMAP.md` (do not copy its checklist here)
 
 ## Current task
-The dev database `rms` is now configured for the owner's store: **Sudan, SDG, 0% taxes, prices tax
-included** (D-015). Milestone A is implemented and reported; **stopped at the gate for owner approval**
-(autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
+Milestone A is implemented and reported; **stopped at the gate for owner approval** (autonomy 2).
+Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
+The owner is currently reviewing the printed documents and the invoice form (the preview pane collapse,
+D-037, still needs his confirmation at ≥ 1400 px window width).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **The invoice preview pane can be collapsed** (D-037) — the owner kept the document preview
+  but asked for a way to close/expand it, and Odoo 19 has no such control (mail's black pill *pops the pane
+  out to another window*; pdf.js's `»` only opens its own toolbar). `static/src/views/preview_collapse.js`
+  patches mail's `AttachmentView` and adds a dark tab on the right edge of the screen; clicking it hides the
+  pane (`o_rms_preview_collapsed` → `display: none`), clicking `«` brings it back. Verified on `rms_test4`
+  invoice 7 with the wide layout forced: tab at the right edge (offset 0), collapse/expand both flip the
+  computed display. Two traps recorded: `this.el` is undefined in Owl 2 `onMounted`, and Odoo's RTL stylesheet
+  swaps `left`/`right`, so the tab's position is set inline. **The ≥1400 px side-by-side layout was not
+  reproduced** (automated browser ~700 px wide) — the owner should reload with **Ctrl+Shift+R** and confirm.
+  `mail` added to `depends`.
 - 2026-11-15: **A normal invoice fits on one page again** (D-035, D-036) — `INV/2026/00005` and `00001`
   printed on two pages with only the last line of the payment block spilling over. Cause: not a bug, but
   arithmetic — an A4 body is 213 mm (297 − 52 − 32) and a 3-line invoice whose products carry a

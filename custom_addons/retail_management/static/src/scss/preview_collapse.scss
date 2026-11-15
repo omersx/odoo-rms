@@ -1,0 +1,18 @@
+// Invoice form: tab that collapses the right-hand preview pane (D-037).
+// top/right are set inline by the JS: Odoo's RTL stylesheet swaps left and right,
+// which would put the tab on the wrong edge of the screen.
+.o_rms_pane_toggle {
+    position: fixed;
+    z-index: 1050;
+    padding: 10px 4px;
+    border-radius: 6px 0 0 6px;
+    opacity: 0.75;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.o_attachment_preview.o_rms_preview_collapsed {
+    display: none !important;
+}

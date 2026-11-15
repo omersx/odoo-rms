@@ -1,11 +1,12 @@
 {
     "name": "Retail Management",
-    "version": "19.0.1.9.0",
+    "version": "19.0.1.10.0",
     "summary": "Simplified retail workspace on top of native POS, Stock and Invoicing",
     "author": "odoo-rms contributors",
     "license": "LGPL-3",
     "category": "Sales/Point of Sale",
-    "depends": ["point_of_sale", "stock", "account", "contacts"],
+    # mail: the invoice form preview pane we add a collapse tab to (D-037)
+    "depends": ["point_of_sale", "stock", "account", "contacts", "mail"],
     "data": [
         "security/retail_security.xml",
         "data/hide_apps.xml",
@@ -25,6 +26,9 @@
             # Product form: camera Scan button on the Barcode field (D-022)
             "retail_management/static/src/fields/barcode_scan_field.js",
             "retail_management/static/src/fields/barcode_scan_field.xml",
+            # Invoice form: collapse/expand tab for the preview pane (D-037)
+            "retail_management/static/src/scss/preview_collapse.scss",
+            "retail_management/static/src/views/preview_collapse.js",
         ],
         # POS payment screen: two columns, full-size icons (D-019)
         # POS receipt: QR only, no portal URL or 5-char code (D-021)
