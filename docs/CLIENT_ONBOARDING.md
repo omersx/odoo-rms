@@ -40,7 +40,7 @@ something an agent can do.
 ```bash
 git clone https://github.com/omersx/odoo-rms.git ~/rms-<client>
 cd ~/rms-<client>
-git checkout v19.0.1.18.0     # the release being deployed — a tag, never main (docs/RELEASES.md)
+git checkout "$(git tag --list 'v[0-9]*' --sort=-v:refname | head -1)"   # newest release, never main (docs/RELEASES.md)
 scripts/setup.sh dev          # generates .env + config/odoo.conf with random secrets
 ```
 

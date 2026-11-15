@@ -8,9 +8,9 @@
 
 ## Status: released template, development finished
 - `https://github.com/omersx/odoo-rms` — public, branch `main`, tags `phase-1..4-done` and `milestone-a`.
-- `retail_management 19.0.1.18.0` on Odoo 19.0 / PostgreSQL 16; a clean install on a fresh database passes
+- `retail_management 19.0.1.19.0` on Odoo 19.0 / PostgreSQL 16; a clean install on a fresh database passes
   **22 tests, 0 failed**. CI (`.github/workflows/tests.yml`) runs the same install + tests on every push.
-- Shops run a **release tag** (`v19.0.1.18.0`), never `main` — `docs/RELEASES.md`.
+- Shops run a **release tag** (`v19.0.1.19.0`, the newest), never `main` — `docs/RELEASES.md`.
 - Owner's position (2026-11-15): the app is ready, no further development requested. A new company is
   onboarded with **data only** (`docs/CLIENT_ONBOARDING.md`) — no code changes, no local commits.
 

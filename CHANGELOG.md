@@ -2,6 +2,25 @@
 
 One section per release tag. The version is the module version (`__manifest__.py`); the tag is `v` + it.
 
+## [19.0.1.19.0] — 2026-11-15
+
+Documentation, CI and client-onboarding release. **No business logic changed**; the module version is bumped
+so a shop can tell the two builds apart and upgrade through the normal staged path (`docs/RELEASES.md`).
+Verified on **Odoo 19.0-20261015 / PostgreSQL 16**: 22 tests, 0 failed, and green CI on every commit below.
+
+- `AGENTS.md` starts with a **mode check**: if `CLIENT_NOTE.md` exists, an agent follows only
+  `docs/CLIENT_ONBOARDING.md`, edits nothing under `custom_addons/` or `docs/`, and does not commit. Hard
+  stops and technical invariants still apply.
+- CI: `.github/workflows/tests.yml` installs the module on a throwaway database and gates on
+  `0 failed, 0 error(s) of N tests` on every push and pull request; runner pinned to `ubuntu-24.04`,
+  `actions/checkout@v7`; badge in the README.
+- Releases: `docs/RELEASES.md` (a shop runs a tag, staged update, rollback via backup) and this changelog.
+  The tag equals the module version, and a tag is only cut on a commit with green CI.
+- Onboarding checks out the **newest release tag** instead of a hard-coded one; the client brief is written
+  inside the client clone, not in the template checkout.
+- README and roadmap now state what is actually built: reports and the customer dashboard are **not built**
+  (`B-002`); development is paused after Milestone A.
+
 ## [19.0.1.18.0] — 2026-11-15
 
 First published release of the template. Verified on **Odoo 19.0-20261015 / PostgreSQL 16** with a clean

@@ -1,11 +1,14 @@
 # Releases — what a shop runs, and how to move it
 
-**A shop runs a tag, never `main`.** The tag equals the module version (`19.0.1.18.0` →
-`v19.0.1.18.0`) because that is the number Odoo itself compares when it upgrades a database.
+**A shop runs a tag, never `main`.** The tag equals the module version (`19.0.1.19.0` →
+`v19.0.1.19.0`) because that is the number Odoo itself compares when it upgrades a database.
 
 ## Cut a release (template repo, development mode)
 
 1. `git status` clean, the CI run on `main` green, and the fresh-clone drill done (`docs/CLIENT_ONBOARDING.md`).
+   **A tag is only cut on a commit whose CI run is green and which contains the mode check, the onboarding
+   update and the docs it claims** — a shop installs the tag, so whatever is missing at that commit is missing
+   for every client.
 2. Bump `"version"` in `custom_addons/retail_management/__manifest__.py` (e.g. `19.0.1.18.0` → `19.0.1.19.0`).
 3. Add the same version as a section in `CHANGELOG.md`, with the Odoo build it was verified on.
 4. Commit, then:
@@ -22,7 +25,7 @@ No release script: a guard around `git tag` is one more thing to trust, and the 
 ```bash
 git clone https://github.com/omersx/odoo-rms.git ~/rms-<client>
 cd ~/rms-<client>
-git checkout v19.0.1.18.0
+git checkout "$(git tag --list 'v[0-9]*' --sort=-v:refname | head -1)"   # newest release, never main
 scripts/setup.sh dev      # then edit COMPOSE_PROJECT_NAME / DB_NAME / ODOO_PORT in .env
 scripts/bootstrap.sh dev
 ```
