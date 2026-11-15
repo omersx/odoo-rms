@@ -1,6 +1,6 @@
 # Runs this add-on's tests on every push and pull request, on a throwaway Odoo database.
-# The test command and the final grep were verified locally on 2026-11-15 (22 tests, summary line:
-# "<ts> INFO <db> odoo.tests.result: 0 failed, 0 error(s) of 22 tests when loading database '<db>'").
+# Verified: the test command and the final grep were checked locally on 2026-11-15 (22 tests), and the first
+# GitHub run (workflow id 43756650966) was green in 1m20s with all 22 tests started.
 name: tests
 
 on:
@@ -10,10 +10,12 @@ on:
 
 jobs:
   odoo-tests:
-    runs-on: ubuntu-latest
+    # Pinned, not ubuntu-latest: the runner image will migrate (announced for 2026), and this template
+    # should fail for a code reason, not a runner reason.
+    runs-on: ubuntu-24.04
     timeout-minutes: 45 # a fresh install of pos/stock/account takes minutes; the test run is short
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Generate a CI-only stack (random secrets, dev overlay)
         run: scripts/setup.sh dev
