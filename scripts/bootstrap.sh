@@ -50,9 +50,9 @@ fi
 
 echo "== 6/6 Start Odoo =="
 docker compose up -d odoo
-echo -n "Waiting for http://localhost:8069 "
+echo -n "Waiting for http://localhost:${ODOO_PORT:-8069} "
 for i in $(seq 1 90); do
-  code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8069/web/login || true)
+  code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:${ODOO_PORT:-8069}/web/login" || true)
   if [[ "$code" == "200" || "$code" == "303" ]]; then echo " ready (HTTP $code)."; READY=1; break; fi
   echo -n "."; sleep 2
 done
@@ -66,7 +66,7 @@ echo "Odoo:     $(docker compose exec -T odoo odoo --version 2>/dev/null || echo
 echo "Postgres: $(docker compose exec -T db postgres --version 2>/dev/null || echo 'not detected')"
 echo "Images:"; docker compose images 2>/dev/null || true
 echo
-echo "Odoo is at http://localhost:8069 (database: ${DB_NAME})."
+echo "Odoo is at http://localhost:${ODOO_PORT:-8069} (database: ${DB_NAME})."
 echo "IMPORTANT: a database created from the command line starts with login 'admin' and a default"
 echo "password. Change the admin password in Odoo before doing anything else. Dev mode is reachable"
 echo "from this computer only; never expose this database to a network unchanged."

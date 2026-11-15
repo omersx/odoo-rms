@@ -36,10 +36,11 @@ else
   else fail "docker compose (v2 plugin) not available."; fi
 fi
 
-# 4. Port 8069 (dev mode)
-if (exec 3<>/dev/tcp/127.0.0.1/8069) 2>/dev/null; then
-  warn "Port 8069 already answers. If it is not this project's Odoo, change the port in docker-compose.dev.yml."
-else ok "Port 8069 is free"; fi
+# 4. Odoo port (dev mode)
+PORT="${ODOO_PORT:-8069}"
+if (exec 3<>/dev/tcp/127.0.0.1/"$PORT") 2>/dev/null; then
+  warn "Port $PORT already answers. If it is not this project's Odoo, change ODOO_PORT in .env."
+else ok "Port $PORT is free"; fi
 
 # 5. Resources
 FREE_GB=$(df -Pk . 2>/dev/null | awk 'NR==2{printf "%d", $4/1024/1024}')
