@@ -19,11 +19,15 @@
     </function>
 
     <!-- A cashier's app list is Retail Management + Dashboards only (owner's request, D-038).
-         The standalone Point of Sale app, Apps and Tests are manager-only; the cashier still
-         opens the till from Retail Management → Point of Sale. Menus are cosmetic, POS rights
-         are untouched. -->
+         The standalone Point of Sale, Invoicing, Apps and Tests apps are manager-only; the cashier
+         still reaches the till and the invoice list inside Retail Management. Menus are cosmetic,
+         POS/invoicing rights are untouched. -->
     <function model="ir.ui.menu" name="write">
         <value eval="[ref('point_of_sale.menu_point_root')]"/>
+        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+    </function>
+    <function model="ir.ui.menu" name="write">
+        <value eval="[ref('account.menu_finance')]"/>
         <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
     </function>
     <function model="ir.ui.menu" name="write">

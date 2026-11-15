@@ -95,31 +95,33 @@ class TestRetailSecurity(TransactionCase):
         self.assertEqual(invoice.partner_id, customer)
         self.assertEqual(invoice.amount_total, 10.0)
 
-    def test_cashier_cannot_create_invoice_in_backoffice(self):
-        """Invoicing at the till yes, bookkeeping rights no (D-039)."""
+    def test_cashier_can_create_invoice_in_backoffice(self):
+        """Owner's decision (D-040): the cashier invoices from the back office too."""
         customer = self.env["res.partner"].create({"name": "Backoffice Customer"})
-        with self.assertRaises(AccessError):
-            self.env["account.move"].with_user(self.cashier).create(
-                {"move_type": "out_invoice", "partner_id": customer.id}
-            )
-
-    def test_cashier_cannot_read_journal_entries(self):
-        """Invoicing rights must not open the books (D-039)."""
-        account_in = self.env["account.account"].search([("account_type", "=", "income")], limit=1)
-        account_out = self.env["account.account"].search(
-            [("account_type", "=", "asset_current")], limit=1
-        )
-        entry = self.env["account.move"].create(
+        invoice = self.env["account.move"].with_user(self.cashier).create(
             {
-                "move_type": "entry",
-                "line_ids": [
-                    (0, 0, {"name": "probe in", "account_id": account_out.id, "debit": 1.0}),
-                    (0, 0, {"name": "probe out", "account_id": account_in.id, "credit": 1.0}),
+                "move_type": "out_invoice",
+                "partner_id": customer.id,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "name": "Cashier invoice line",
+                            "quantity": 1,
+                            "price_unit": 10.0,
+                            "tax_ids": [(6, 0, [])],
+                        },
+                    )
                 ],
             }
         )
-        with self.assertRaises(AccessError):
-            entry.with_user(self.cashier).read(["name"])
+        self.assertEqual(invoice.move_type, "out_invoice")
+        self.assertEqual(invoice.state, "draft")
+
+    # The journal-entry part of Odoo's Invoicing right cannot be separated from invoicing
+    # (account_move._post requires the group; its ACL is all-or-nothing), so the owner accepted it
+    # in D-040 and the residual risk is tracked in BACKLOG.md (B-001).
 
     def test_cashier_cannot_refund_line(self):
         with self.assertRaises(AccessError):
@@ -240,7 +242,12 @@ class TestRetailSecurity(TransactionCase):
         """The cashier's app list is Retail Management + Dashboards (data/hide_apps.xml)."""
         manager_group = self.env.ref("retail_management.group_retail_manager")
         self.assertNotIn(manager_group, self.cashier.group_ids)
-        for xmlid in ("point_of_sale.menu_point_root", "base.menu_management", "base.menu_tests"):
+        for xmlid in (
+            "point_of_sale.menu_point_root",
+            "account.menu_finance",
+            "base.menu_management",
+            "base.menu_tests",
+        ):
             menu = self.env.ref(xmlid, raise_if_not_found=False)
             if menu:
                 self.assertEqual(menu.group_ids, manager_group, f"{xmlid} must be manager-only")

@@ -15,23 +15,33 @@
 Milestone A is implemented and reported; **stopped at the gate for owner approval** (autonomy 2).
 Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 The owner is currently reviewing the printed documents, the invoice form (the preview pane collapse,
-D-037, still needs his confirmation at ≥ 1400 px window width) and the cashier's workspace (D-038, D-039 —
-customers + invoicing at the till; back-office invoicing is manager-only unless he says otherwise).
+D-037, still needs his confirmation at ≥ 1400 px window width) and the cashier's workspace (D-038, D-039,
+D-040 — customers, invoicing at the till *and* from the back office; the trade-off that he can also reach
+journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **Back-office invoicing enabled for the cashier too** (D-040, owner's call) — *Retail Cashier*
+  now also implies Odoo's **Invoicing** right, so he creates, edits and posts invoices in
+  *Retail Management → Invoicing*. Odoo has no narrower switch (`account.move._post` hard-requires the group,
+  and the group's ACL on `account.move` is `1,1,1,1` with no rule), so **the books are exposed to him**:
+  verified on `rms` that he can now read, create and write journal entries. Accepted by the owner, logged as
+  B-001 (and B-003 proposes splitting the role). The launcher still shows **two tiles**: core's *Invoicing*
+  app (`account.menu_finance`) is now manager-only in `data/hide_apps.xml`, so the cashier reaches the same
+  invoice list inside Retail Management (`Point of Sale, Products, Invoicing, Customers`). Verified in a real
+  cashier session: `/odoo/customer-invoices` opens with *جديد*. Tests: 20, 0 failed.
 - 2026-11-15: **A cashier adds customers and invoices a sale at the till** (D-039) — the owner's request,
   done with the least privilege that achieves it. *Retail Cashier* now implies native **Contact Creation**
   (`base.group_partner_manager`) so he can add a customer at checkout, and **nothing from accounting**:
   POS creates and posts invoices through its own sudo path (`pos.order._create_invoice` → `AccountMove.sudo()`,
   `_post` on `invoice.sudo()`), so the cashier needs no *Invoicing* right. Proven on `rms`: a user holding only
   Internal User + POS User + Contact Creation generated and posted `INV/2026/00006` from a POS order.
-  Rejected the one-line alternative (`account.group_account_invoice`) after a probe showed it also lets a
-  cashier **read, write and create journal entries** — the books. Visible menus under Retail Management for
-  the cashier are *Point of Sale, Products, Customers*; he reads only his own POS invoices (2 of 28
-  `account.move`) and is denied invoice/journal-entry creation. Trap recorded: `implied_ids` with `(4, ref)`
+  The one-line alternative (`account.group_account_invoice`) was rejected at first because a probe showed it
+  also lets a cashier **read, write and create journal entries** — the books; the owner accepted that price
+  the same day in D-040, so the group is now granted. Visible menus under Retail Management for the cashier
+  are *Point of Sale, Products, Invoicing, Customers*. Trap recorded: `implied_ids` with `(4, ref)`
   never removes a group on upgrade — use `[(6, 0, [...])]`. Tests: 21, 0 failed (new:
-  `test_cashier_can_invoice_a_pos_order`, `test_cashier_cannot_create_invoice_in_backoffice`,
-  `test_cashier_cannot_read_journal_entries`).
+  `test_cashier_can_invoice_a_pos_order`, `test_cashier_cannot_create_invoice_in_backoffice` at the time,
+  `test_cashier_cannot_read_journal_entries` at the time; the latter two were replaced by D-040).
 - 2026-11-15: **Cashier account created and his app list trimmed** (D-038) — login `cashier` / password
   `cashier` (placeholder, Arabic UI, group *Retail Cashier*: internal user + POS user only). His app list is
   **Retail Management + Dashboards**: the standalone Point of Sale app, Apps and Tests are now
@@ -236,8 +246,9 @@ product barcode in front of the webcam — the field fills with the digits (noth
 1. Log in as the Retail Manager; open *Retail Management* → *Point of Sale* → *Main Register* → *Open*.
 2. Sell a product for cash, check the receipt, then close the session (cash counted).
 3. Log in as the Retail Cashier (`cashier` / `cashier`): confirm the app list shows only *Retail Management*
-   and *Dashboards*; add a customer and sell with the POS **Invoice** button; confirm *Invoicing* is **not**
-   in his Retail Management menu (invoices made outside the till stay a manager job — D-039).
+   and *Dashboards*; add a customer; invoice a sale with the POS **Invoice** button; open
+   *Retail Management → Invoicing* and check the invoice list (D-040). The standalone *Invoicing* app tile
+   is intentionally hidden from him.
 4. Report anything that feels wrong about the flow (this is the Milestone A acceptance).
 
 **After approval**, Milestone B starts with invoicing from POS and the Customers/CRM screens.
@@ -258,9 +269,9 @@ session cookie; it must be removed again — see "Next action".)
    items, now priced in SDG at 10,000 per USD — the catalogue needs your real items and prices before the
    register goes live. Note: some demo items have a *cost* above their *sale price* (e.g. `Large Cabinet`
    costs 8,000,000 and sells for 3,200,000) because Odoo's demo data was never consistent; real costs fix it.
-7. Owner (D-039): the cashier invoices **at the till** with the POS *Invoice* button. Creating an invoice
-   in the back office (*Retail Management → Invoicing*) needs Odoo's *Invoicing* right, which also opens
-   the accounting books (journal entries) to him — say so if you want that instead.
+7. Owner (D-040): the cashier now has Odoo's *Invoicing* right (back-office invoices enabled, as you asked).
+   It is all-or-nothing, so he can also reach journal entries through a direct request, even though no
+   Accounting menu is shown. B-001 tracks narrowing it; B-003 proposes a separate *Retail Billing* role.
 
 ## Decisions pending owner review
 - D-001 mirror images · D-002 no `pos_hr` · D-003 no discounts · D-004 customers admin-only ·
@@ -270,8 +281,8 @@ session cookie; it must be removed again — see "Next action".)
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
   trust-on-the-cashier · D-022 camera Scan button on the product Barcode field · D-023 low-stock reordering rules · D-024 Arabic (ar_001).
-  D-025…D-039 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights)
-  are listed in `DECISIONS.md`; D-038 and D-039 are the ones to read for the cashier.
+  D-025…D-040 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights)
+  are listed in `DECISIONS.md`; D-038, D-039 and D-040 are the ones to read for the cashier.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only
