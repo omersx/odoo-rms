@@ -6,11 +6,11 @@ basic reports, Administrator/Cashier access. You may be one of several agents wo
 over time, so **memory lives in files and Git, not in your context** (see "Memory and handoff").
 
 ## Start of every session (do this first)
-1. Read `docs/PROJECT_STATE.md` (where we are, next action, blockers, autonomy level).
+1. Read `docs/PROJECT_STATE.md` (status, open items, where to start, autonomy level).
 2. Read the latest entries of `docs/DECISIONS.md`, then the spec requirements for the current phase.
 3. **Verify, do not trust:** run `git status` and `git log --oneline -15`, check the dev stack is up,
    and re-run the relevant tests. If reality differs from the state file, fix the state file and say so.
-4. Continue from "Next action". Do not redo finished work; do not restart discovery.
+4. Continue from the first open item. Do not redo finished work; do not restart discovery.
 
 **One exception: "set up / customize this for a company".** Then you are not developing the product — read
 `docs/CLIENT_ONBOARDING.md` and follow that instead of steps 2–4. For one company nothing in
@@ -22,7 +22,7 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
 | `docs/RETAIL_MANAGEMENT_SPEC.md` | WHAT to build: scope, requirements, acceptance tests | **Owner only** |
 | `docs/ARCHITECTURE.md` | Verified technical facts and design | Agent |
 | `docs/DEVELOPMENT_ROADMAP.md` | Phase checklist and evidence | Agent |
-| `docs/PROJECT_STATE.md` | **Live handoff file**: current task, next action, blockers | Agent, constantly |
+| `docs/PROJECT_STATE.md` | **Release card + handoff**: status, open items, where to start (under ~30 lines) | Agent |
 | `docs/DECISIONS.md` | Every non-trivial decision, with alternatives and reasons | Agent (append) |
 | `docs/BACKLOG.md` | Improvement ideas and out-of-scope proposals for the owner | Agent (append) |
 | `docs/AGENT_PLAYBOOK.md` | How to debug, decide, escalate, checkpoint, report | Reference |
@@ -127,8 +127,8 @@ project files within the current phase; updating docs, state, decisions and back
 - **Checkpoint often:** update `PROJECT_STATE.md` after every meaningful step, before long or risky
   commands, and before you stop. A session can end without warning.
 - **Commit often** with clear messages; tag each finished phase `phase-N-done`. Git is ground truth.
-- **Write for a stranger:** "Next action" must be concrete (file to open, command to run, expected
-  result). Include why, not only what.
+- **Write for a stranger:** an open item must be concrete (file to open, command to run, expected result).
+  Include why, not only what.
 - **Record decisions when you make them**, not afterwards.
 - **Never leave work half-applied** without saying so under "In-flight work".
 - If the state file and reality disagree, trust reality, then repair the file.

@@ -17,7 +17,7 @@ agent. Do not start over.
 4. Report back briefly, then continue:
    - Where the project stands (milestone, phase, what is verified done).
    - Any discrepancy between the notes and reality, and how you fixed the notes.
-   - What you will do next (the stated "Next action", adjusted if reality differs).
+   - What you will do next (the first open item, adjusted if reality differs).
 5. Continue working according to the autonomy level in `PROJECT_STATE.md`. Checkpoint as you go.
    Update `PROJECT_STATE.md` before you stop.
 
