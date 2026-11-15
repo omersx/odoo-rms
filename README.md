@@ -1,5 +1,7 @@
 # odoo-rms — Retail Management System for Odoo 19 Community
 
+[![tests](https://github.com/omersx/odoo-rms/actions/workflows/tests.yml/badge.svg)](https://github.com/omersx/odoo-rms/actions/workflows/tests.yml)
+
 A thin, opinionated retail layer on top of **native Odoo 19 Community**: two roles, a clean app
 launcher, server-side guards for refunds and stock moves, and POS screens that survive a busy counter.
 
