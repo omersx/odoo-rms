@@ -19,22 +19,33 @@
             <attribute name="style">display: none;</attribute>
         </xpath>
 
+        <!-- Core pushes the totals block down by `mt-5` (48 px) in PDF mode; that 12 mm of white space
+             is what a short invoice needs to keep the last line on page 1. `!important` because
+             bootstrap's utility classes are `!important` themselves. -->
+        <xpath expr="//div[@id='right-elements']" position="attributes">
+            <attribute name="style">margin-top: 12px !important;</attribute>
+        </xpath>
+
         <xpath expr="//div[@id='right-elements']/parent::*" position="after">
-            <div class="mb-3" name="payment_methods"
-                 t-if="o.move_type == 'out_invoice' and (o.company_id.bank_ids or o.company_id.partner_id.phone)">
+            <!-- Tight by design: an ordinary 3-line invoice already needs ~218 mm of the 213 mm an A4
+                 body has, and this block costs ~20 mm instead of ~31 mm only because of the spacing
+                 below. Do not restore the bootstrap paragraph margins. -->
+            <div name="payment_methods"
+                 t-if="o.move_type == 'out_invoice' and (o.company_id.bank_ids or o.company_id.partner_id.phone)"
+                 style="margin-top: 6px; font-size: 0.9em; line-height: 1.25;">
                 <t t-if="o.company_id.bank_ids">
-                    <p class="mb-1 fw-bold" t-out="o.company_id.rms_payment_title or 'طرق الدفع'"/>
+                    <div class="fw-bold" t-out="o.company_id.rms_payment_title or 'طرق الدفع'"/>
                     <!-- dir=ltr: in an RTL document "1234 5678 90" otherwise prints as "90 5678 1234" -->
-                    <p class="mb-0" t-foreach="o.company_id.bank_ids" t-as="account">
+                    <div t-foreach="o.company_id.bank_ids" t-as="account">
                         <t t-if="account.bank_id"><t t-out="account.bank_id.name"/> · </t>
                         رقم الحساب : <span dir="ltr" class="fw-bold" t-out="account.acc_number"/>
                         · باسم <t t-out="account.acc_holder_name or account.partner_id.name"/>
-                    </p>
+                    </div>
                 </t>
-                <p class="mb-0" t-if="o.company_id.partner_id.phone">
+                <div t-if="o.company_id.partner_id.phone">
                     <t t-out="o.company_id.rms_payment_note"/>
                     <span dir="ltr" class="fw-bold" t-out="o.company_id.partner_id.phone"/>
-                </p>
+                </div>
             </div>
         </xpath>
     </template>

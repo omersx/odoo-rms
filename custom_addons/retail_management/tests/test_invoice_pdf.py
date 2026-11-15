@@ -40,3 +40,18 @@ class TestInvoicePdfAttachment(TransactionCase):
             self.invoice.action_post()
         self.assertEqual(self.invoice.state, "posted")
         self.assertFalse(self.invoice.invoice_pdf_report_id)
+
+    def test_pdf_renders_in_customer_language(self):
+        """D-035: the report follows the *session* language, so an invoice generated outside the web
+        UI would reach an Arabic customer with English labels."""
+        self._skip_without_chart()
+        self.partner.lang = "ar_001"
+        seen = {}
+
+        def fake_render(records, report_ref, res_ids=None, data=None):
+            seen["lang"] = records.env.lang   # the env the report was rendered with
+            return b"%PDF-1.4 test", "pdf"
+
+        with patch.object(IrActionsReport, "_render_qweb_pdf", autospec=True, side_effect=fake_render):
+            self.invoice.action_post()
+        self.assertEqual(seen.get("lang"), "ar_001")

@@ -17,6 +17,15 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 (autonomy 2). Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **A normal invoice fits on one page again** (D-035, D-036) — `INV/2026/00005` and `00001`
+  printed on two pages with only the last line of the payment block spilling over. Cause: not a bug, but
+  arithmetic — an A4 body is 213 mm (297 − 52 − 32) and a 3-line invoice whose products carry a
+  description needs ~218 mm. The payment block is now printed tight (0.9 em, line-height 1.25, `div`s)
+  and core's `mt-5` above the totals is cut to 12 px, which moves the totals up ~21 mm. All 5 posted
+  invoices on `rms` are 1 page, last line at 254.8 mm of the 265 mm body. The attached PDF is also
+  rendered in the **customer's language** now (D-036): the report follows the session language, so the
+  PDFs attached earlier were English while the screen prints Arabic. Re-attached all 5 (Arabic, Tajawal).
+  Tests: 17, 0 failed (new: `test_pdf_renders_in_customer_language`).
 - 2026-11-14: **Invoice PDFs are styled again** (D-033 amended, D-034) — the first backfill came out plain
   because Odoo only passes its asset cookie to wkhtmltopdf inside a web request; rendering from `odoo shell`
   (or a cron) skips it. The five `rms` invoices were regenerated with `dbfilter = ^rms$` set temporarily (so
@@ -181,6 +190,10 @@ included** (D-015). Milestone A is implemented and reported; **stopped at the ga
 - 2026-11-01: Phase 0 discovery + Stage 0 environment (Docker Desktop, Odoo 19.0-20261015).
 
 ## Next action (concrete)
+**Owner:** open (or download) `INV/2026/00005` — it is one page now, and the payment block sits at the
+bottom of it. Tell me if the tighter wallet block is too small on paper (`views/report_invoice.xml`,
+`font-size: 0.9em; line-height: 1.25`).
+
 **Owner:** try the new Scan button. *Retail Management → Products →* open a product (or **New**) *→* the
 **Barcode** field has a barcode icon at its right edge. Click it, allow the camera when Chrome asks, hold a
 product barcode in front of the webcam — the field fills with the digits (nothing is saved until **Save**).
@@ -194,7 +207,8 @@ product barcode in front of the webcam — the field fills with the digits (noth
 **After approval**, Milestone B starts with invoicing from POS and the Customers/CRM screens.
 
 ## In-flight / uncommitted work
-None (Phase 4 committed and tagged `phase-4-done`).
+None. (`dbfilter = ^rms$` was temporarily added to `config/odoo.conf` to render the styled PDFs without a
+session cookie; it must be removed again — see "Next action".)
 
 ## Blockers and questions for the owner
 1. **Milestone A gate**: accept the working core or list changes.
