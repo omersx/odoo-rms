@@ -1,0 +1,44 @@
+# Runs this add-on's tests on every push and pull request, on a throwaway Odoo database.
+# The test command and the final grep were verified locally on 2026-11-15 (22 tests, summary line:
+# "<ts> INFO <db> odoo.tests.result: 0 failed, 0 error(s) of 22 tests when loading database '<db>'").
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  odoo-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45 # a fresh install of pos/stock/account takes minutes; the test run is short
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate a CI-only stack (random secrets, dev overlay)
+        run: scripts/setup.sh dev
+
+      - name: Show the image build under test
+        run: grep -E '^(ODOO_IMAGE|POSTGRES_IMAGE)=' .env
+
+      - name: Start the database
+        run: docker compose up -d --wait db
+
+      - name: Install the module on a disposable database
+        # No --test-enable here: on a fresh database Odoo would run every core module's tests.
+        run: docker compose run --rm odoo odoo -d rms_ci -i retail_management --without-demo=all --stop-after-init
+
+      - name: Run this module's tests
+        run: |
+          set -o pipefail
+          docker compose run --rm odoo odoo -d rms_ci -u retail_management --test-enable --stop-after-init 2>&1 | tee test.log
+          # Fail unless Odoo reports zero failures AND at least one test actually ran.
+          grep -E "0 failed, 0 error\(s\) of [1-9][0-9]* tests" test.log
+
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --tail 150 || true
+
+      - name: Clean up (throwaway CI runner)
+        if: always()
+        run: docker compose down -v || true

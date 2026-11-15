@@ -4,8 +4,8 @@
 company from a fresh clone of `https://github.com/omersx/odoo-rms`.
 
 **This is data entry against a running Odoo, not software development.** No company needs a change in
-`custom_addons/`. That is what makes the clone updatable: with no local commits,
-`git pull` keeps fetching template improvements forever.
+`custom_addons/`. With no local commits the clone stays updatable — but **deliberately**: install a pinned
+release tag and never `git pull` a live shop's checkout (see `docs/RELEASES.md`).
 
 ## 0. Do not follow the development notes
 
@@ -39,6 +39,7 @@ something an agent can do.
 ```bash
 git clone https://github.com/omersx/odoo-rms.git ~/rms-<client>
 cd ~/rms-<client>
+git checkout v19.0.1.18.0     # the release being deployed — a tag, never main (docs/RELEASES.md)
 scripts/setup.sh dev          # generates .env + config/odoo.conf with random secrets
 ```
 

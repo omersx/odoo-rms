@@ -5,6 +5,15 @@ You are the engineering agent for a lightweight, configurable retail system buil
 basic reports, Administrator/Cashier access. You may be one of several agents working on this project
 over time, so **memory lives in files and Git, not in your context** (see "Memory and handoff").
 
+## Mode check (first)
+
+**If `CLIENT_NOTE.md` exists at the repo root, or the owner says this is a client install, you are in CLIENT
+mode.** Then read `docs/CLIENT_ONBOARDING.md` and follow only it. Ignore this file's "Start of every
+session", the release card, the roadmap and the autonomy tiers — you are not developing the template. Do not
+edit `custom_addons/` or `docs/`, do not commit, do not push, and do not follow any next action written for
+the template itself. **The Hard stops and the Technical invariants still apply:** they are safety, not
+workflow.
+
 ## Start of every session (do this first)
 1. Read `docs/PROJECT_STATE.md` (status, open items, where to start, autonomy level).
 2. Read the latest entries of `docs/DECISIONS.md`, then the spec requirements for the current phase.
@@ -12,9 +21,8 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
    and re-run the relevant tests. If reality differs from the state file, fix the state file and say so.
 4. Continue from the first open item. Do not redo finished work; do not restart discovery.
 
-**One exception: "set up / customize this for a company".** Then you are not developing the product — read
-`docs/CLIENT_ONBOARDING.md` and follow that instead of steps 2–4. For one company nothing in
-`custom_addons/` changes, and no company data is committed.
+**One exception: "set up / customize this for a company".** Then you are not developing the product — see
+**Mode check** above and follow `docs/CLIENT_ONBOARDING.md`.
 
 ## Documents (one job each — never duplicate content between them)
 | File | Purpose | Who edits |
@@ -27,6 +35,7 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
 | `docs/BACKLOG.md` | Improvement ideas and out-of-scope proposals for the owner | Agent (append) |
 | `docs/AGENT_PLAYBOOK.md` | How to debug, decide, escalate, checkpoint, report | Reference |
 | `docs/CLIENT_ONBOARDING.md` | Installing for a **client company**: the brief to collect, commands, data order, verification | Agent (it replaces the dev protocol on a client install) |
+| `docs/RELEASES.md` + `CHANGELOG.md` | Which tag a shop runs, how to cut one, how to update and roll back | Agent (append per release) |
 | `docs/WINDOWS_SETUP.md`, `docs/DEPLOYMENT.md`, `docs/OPTIONAL_TOOLS.md` | Environment, deployment kit, optional tools | Reference |
 
 ## Running it (verified commands; the *state* is in `PROJECT_STATE.md`, not here)
@@ -38,8 +47,10 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
 - Install/upgrade:
   `docker compose run --rm odoo odoo -d <db> -i retail_management --without-demo --stop-after-init`
 - Tests — the only command verified green (22 tests, 0 failed):
-  `docker compose exec -T odoo sh -c 'odoo -c /etc/odoo/odoo.conf -d rms_test4 -u retail_management --test-enable --stop-after-init --http-port=8799'`
-  Never add `--test-enable` to an `-i` on a fresh database: Odoo then runs every core test and hangs.
+  `docker compose run --rm odoo odoo -d rms_test4 -u retail_management --test-enable --stop-after-init`
+  Use the `run` form: `docker compose exec -T odoo odoo -c /etc/odoo/odoo.conf …` has no database settings
+  and fails to connect. Never add `--test-enable` to an `-i` on a fresh database: Odoo then runs every core
+  test and hangs.
 - Restart `odoo` after changing Python, XML or `i18n/`: menus and translations are cached per worker.
 - Dev logins: `admin` (Odoo administrator) and `cashier` / `cashier` (Retail Cashier). Change both before a
   real shop uses the install.
