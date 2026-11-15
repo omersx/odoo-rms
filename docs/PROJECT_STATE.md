@@ -283,11 +283,13 @@ the trade-off that the cashier can also reach journal entries is logged as B-001
 - 2026-11-01: Phase 0 discovery + Stage 0 environment (Docker Desktop, Odoo 19.0-20261015).
 
 ## Next action (concrete)
-**Owner:** publish it — create the empty public repo `odoo-rms` on GitHub, then (Hard stop for the agent:
-no remote, nothing pushed) either add the remote yourself or ask for it explicitly:
-`git remote add origin https://github.com/<your-account>/odoo-rms.git && git push -u origin main`.
-Before that, confirm the **branch name** is `main` and that you are happy with the rewritten history
-(D-045 — the wallet numbers are gone from every commit, and so is the pre-audit history).
+**Published (done 2026-11-15):** `https://github.com/omersx/odoo-rms` — public, default branch `main`,
+65 commits, 5 tags, topics set, no `.env`/`config/odoo.conf`/dump on the remote. Remote `origin` is
+configured in this clone with a repo-local credential helper (`~/.local/bin/git-credential-gh`) that reads
+the token from the Windows GitHub CLI keyring, so `git push` works from WSL without storing a secret.
+
+**Owner:** next real work is a company customization or the production kit (`docs/DEPLOYMENT.md`, never
+verified); Milestone A acceptance (invoice one-page + wallet block, preview pane ≥1400 px) is still open.
 
 **Owner:** reload your open Odoo tab once with **Ctrl+Shift+R** — that is the last step for D-042 (the
 launcher now refreshes itself on every open, so it is a one-time thing). The Retail Management tile is gone
