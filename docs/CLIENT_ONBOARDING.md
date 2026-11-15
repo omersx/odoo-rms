@@ -15,8 +15,9 @@ history, not to your job. This file replaces them.
 
 ## 1. Get the brief (the only thing to ask the owner)
 
-Write the answers into `CLIENT_NOTE.md` at the repo root — it is git-ignored. Ask for the items marked ●
-and skip the rest if the owner has none.
+Write the answers into `CLIENT_NOTE.md` **inside the client clone from step 2** — not in the template
+checkout, where it would be a stray ignored file. Asking the owner happens first; the file is written once the
+clone exists. Ask for the items marked ● and skip the rest if the owner has none.
 
 | Item | Detail | Ends up in |
 |---|---|---|
