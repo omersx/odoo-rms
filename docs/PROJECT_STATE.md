@@ -339,9 +339,9 @@ None.
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
   trust-on-the-cashier · D-022 camera Scan button on the product Barcode field · D-023 low-stock reordering rules · D-024 Arabic (ar_001).
-  D-025…D-044 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights,
-  launcher menu refresh, Arabic labels, read-only stock) are listed in `DECISIONS.md`; D-038…D-044 are the ones
-  to read for the cashier and the app list.
+  D-025…D-046 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights,
+  launcher menu refresh, Arabic labels, read-only stock, template/history hygiene, Docker identity) are listed
+  in `DECISIONS.md`; D-038…D-046 are the ones to read for the cashier, the app list and cloning per client.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only
