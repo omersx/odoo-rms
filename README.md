@@ -49,6 +49,10 @@ docker compose restart odoo
 Then open `http://localhost:8069` and change the admin password — a database created from the
 command line starts with a default one.
 
+Running **a second copy on the same machine** (e.g. one clone per client): set `COMPOSE_PROJECT_NAME`,
+`DB_NAME` and `ODOO_PORT` in the new clone's `.env` before the first start, so the two stacks do not
+share containers, volumes or port.
+
 ## Customize it for your company (it is a template)
 
 Nothing in the add-on hardcodes a shop. Everything below is **database data**, entered once per company:

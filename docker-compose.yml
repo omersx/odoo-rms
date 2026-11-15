@@ -5,7 +5,7 @@
 #
 # VERIFY before first use: ODOO_IMAGE and POSTGRES_IMAGE tags (set in .env).
 
-name: rms
+name: ${COMPOSE_PROJECT_NAME:-rms}
 
 services:
   db:
