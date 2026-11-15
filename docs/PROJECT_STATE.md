@@ -20,6 +20,14 @@ customers, invoicing at the till *and* from the back office, and the shop app is
 the trade-off that the cashier can also reach journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **"Clone it for a client" proven end to end** (D-046) — a real fresh clone was set up as a second
+  shop (project `rmsclient`, DB `rmsclient`, port 8070) with `scripts/setup.sh dev` + `scripts/bootstrap.sh dev`,
+  the app installed there, and `http://localhost:8070/web/login` answered **HTTP 200** while the original stack
+  kept running on 8069. Two blockers were found and fixed on the way: the scripts were committed as `644`
+  (`Permission denied` on a Linux clone) and the compose file hardcoded `name: rms` + port 8069, so a second
+  copy would have fought the first. A failed image pull (D-001 geo-block) now warns instead of aborting.
+  The test stack was removed; only the volumes `rmsclient_db-data` / `rmsclient_odoo-data` remain (deleting
+  volumes needs the owner's approval).
 - 2026-11-15: **Publication audit + template cleanup** (D-045) — the repo is ready to publish except the push
   itself (owner's action, Hard stop). What was checked: 65 tracked files, no remote, `.env` and
   `config/odoo.conf` untracked and ignored, no secrets/tokens/local paths/DB dumps in the tree, LGPL-3 licence,
