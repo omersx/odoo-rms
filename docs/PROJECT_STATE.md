@@ -15,11 +15,21 @@
 Milestone A is implemented and reported; **stopped at the gate for owner approval** (autonomy 2).
 Milestone B (invoicing from POS, customers/CRM, dashboard/reports) starts after approval.
 The owner is currently reviewing the printed documents, the invoice form (the preview pane collapse,
-D-037, still needs his confirmation at ≥ 1400 px window width) and the cashier's workspace (D-038, D-039,
-D-040 — customers, invoicing at the till *and* from the back office; the trade-off that he can also reach
-journal entries is logged as B-001).
+D-037, still needs his confirmation at ≥ 1400 px window width) and the cashier's workspace (D-038…D-041:
+customers, invoicing at the till *and* from the back office, and the shop app is hidden from the admin;
+the trade-off that the cashier can also reach journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **The admin login no longer sees Retail Management** (D-041, owner's call) — the shop app is
+  restricted to *Retail Cashier* (a manager inherits it), and the native apps — standalone *Point of Sale*,
+  *Invoicing*, *Apps*, *Tests* — are now restricted to the Odoo administrator (`base.group_system`) instead
+  of *Retail Manager*, so the admin keeps them without the shop app. The admin held *Retail Manager* only
+  because it had been assigned by hand; it was removed on `rms` (admin keeps Settings, POS/stock/product
+  Administrator, Invoicing, Contact Creation). Verified on `rms`: admin's visible apps = *Settings, Apps,
+  Invoicing, Dashboards, Inventory, Point of Sale*; the cashier's = *Dashboards, Retail Management*; browser
+  screenshots of both. Refunds by the admin are unaffected (`is_retail_manager` also accepts `env.is_admin()`).
+  Tests: 21, 0 failed (new: `test_retail_app_is_cashier_only`,
+  `test_technical_apps_are_for_the_odoo_administrator`).
 - 2026-11-15: **Back-office invoicing enabled for the cashier too** (D-040, owner's call) — *Retail Cashier*
   now also implies Odoo's **Invoicing** right, so he creates, edits and posts invoices in
   *Retail Management → Invoicing*. Odoo has no narrower switch (`account.move._post` hard-requires the group,
@@ -281,8 +291,8 @@ session cookie; it must be removed again — see "Next action".)
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
   trust-on-the-cashier · D-022 camera Scan button on the product Barcode field · D-023 low-stock reordering rules · D-024 Arabic (ar_001).
-  D-025…D-040 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights)
-  are listed in `DECISIONS.md`; D-038, D-039 and D-040 are the ones to read for the cashier.
+  D-025…D-041 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights)
+  are listed in `DECISIONS.md`; D-038…D-041 are the ones to read for the cashier and the app list.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only

@@ -18,24 +18,24 @@
         <value eval="{'group_ids': [(6, 0, [ref('group_no_discuss')])]}"/>
     </function>
 
-    <!-- A cashier's app list is Retail Management + Dashboards only (owner's request, D-038).
-         The standalone Point of Sale, Invoicing, Apps and Tests apps are manager-only; the cashier
-         still reaches the till and the invoice list inside Retail Management. Menus are cosmetic,
+    <!-- The shop's app list is Retail Management (+ Dashboards) only, for cashiers and managers
+         (D-038). The native apps — standalone Point of Sale, Invoicing, Apps, Tests — belong to the
+         Odoo administrator, so they are restricted to base.group_system (D-041). Menus are cosmetic,
          POS/invoicing rights are untouched. -->
     <function model="ir.ui.menu" name="write">
         <value eval="[ref('point_of_sale.menu_point_root')]"/>
-        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+        <value eval="{'group_ids': [(6, 0, [ref('base.group_system')])]}"/>
     </function>
     <function model="ir.ui.menu" name="write">
         <value eval="[ref('account.menu_finance')]"/>
-        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+        <value eval="{'group_ids': [(6, 0, [ref('base.group_system')])]}"/>
     </function>
     <function model="ir.ui.menu" name="write">
         <value eval="[ref('base.menu_management')]"/>
-        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+        <value eval="{'group_ids': [(6, 0, [ref('base.group_system')])]}"/>
     </function>
     <function model="ir.ui.menu" name="write">
         <value eval="[ref('base.menu_tests')]"/>
-        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+        <value eval="{'group_ids': [(6, 0, [ref('base.group_system')])]}"/>
     </function>
 </odoo>

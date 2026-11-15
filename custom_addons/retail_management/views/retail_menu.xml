@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Retail workspace: links to native Odoo actions, owns no logic of its own. -->
+    <!-- Retail workspace: links to native Odoo actions, owns no logic of its own.
+         It is the shop's working app (cashier and, through the cashier group, manager), not an
+         Odoo-admin app: the owner asked that the admin login keep only the native apps (D-041). -->
     <menuitem id="menu_retail_root"
               name="Retail Management"
               web_icon="retail_management,static/description/icon.png"
+              groups="retail_management.group_retail_cashier"
               sequence="45"/>
 
     <menuitem id="menu_retail_pos"

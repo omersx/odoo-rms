@@ -237,11 +237,10 @@ class TestRetailSecurity(TransactionCase):
         self.assertEqual(line.qty, -1)
         self.order._refund()
 
-    # --- app list (D-038) --------------------------------------------------
-    def test_cashier_app_list_is_manager_only_for_technical_apps(self):
-        """The cashier's app list is Retail Management + Dashboards (data/hide_apps.xml)."""
-        manager_group = self.env.ref("retail_management.group_retail_manager")
-        self.assertNotIn(manager_group, self.cashier.group_ids)
+    # --- app list (D-038, D-041) -------------------------------------------
+    def test_technical_apps_are_for_the_odoo_administrator(self):
+        """Native apps are hidden from the shop; the Odoo admin keeps them (data/hide_apps.xml)."""
+        system = self.env.ref("base.group_system")
         for xmlid in (
             "point_of_sale.menu_point_root",
             "account.menu_finance",
@@ -250,4 +249,12 @@ class TestRetailSecurity(TransactionCase):
         ):
             menu = self.env.ref(xmlid, raise_if_not_found=False)
             if menu:
-                self.assertEqual(menu.group_ids, manager_group, f"{xmlid} must be manager-only")
+                self.assertEqual(menu.group_ids, system, f"{xmlid} must be admin-only")
+
+    def test_retail_app_is_cashier_only(self):
+        """Retail Management is the shop's app: cashiers see it, and managers inherit it."""
+        cashier_group = self.env.ref("retail_management.group_retail_cashier")
+        root = self.env.ref("retail_management.menu_retail_root")
+        self.assertEqual(root.group_ids, cashier_group)
+        self.assertTrue(self.manager.has_group("retail_management.group_retail_cashier"))
+        self.assertNotIn(self.env.ref("retail_management.group_retail_manager"), self.cashier.group_ids)
