@@ -10,6 +10,9 @@ fail() { echo "  [FAIL] $*"; FAIL=$((FAIL+1)); }
 echo "RMS preflight check"
 echo "-------------------"
 
+# Use the project's own port if .env already exists, so the port check below is about this stack.
+if [ -f .env ]; then set -a; . ./.env; set +a; fi
+
 # 1. Where are we running?
 if grep -qi microsoft /proc/version 2>/dev/null; then ok "Running inside WSL"
 else warn "Not inside WSL (fine on native Linux; on Windows run this from the Ubuntu/WSL terminal)"; fi

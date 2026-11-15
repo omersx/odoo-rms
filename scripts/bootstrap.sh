@@ -28,7 +28,11 @@ case "${COMPOSE_FILE:-}" in
 esac
 
 echo "== 3/6 Images =="
-docker compose pull
+if ! docker compose pull; then
+  # Docker Hub is geo-blocked in some countries (docs/DECISIONS.md D-001); the images are often
+  # already local, so a failed pull must not stop a working stack.
+  echo "WARNING: pull failed (network or mirror?). Continuing with the images already on this machine." >&2
+fi
 
 echo "== 4/6 Database server =="
 docker compose up -d db
