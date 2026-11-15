@@ -49,6 +49,23 @@ docker compose restart odoo
 Then open `http://localhost:8069` and change the admin password — a database created from the
 command line starts with a default one.
 
+## Customize it for your company (it is a template)
+
+Nothing in the add-on hardcodes a shop. Everything below is **database data**, entered once per company:
+
+| What | Where |
+|---|---|
+| Company name, address, logo, document footer | *Settings → Companies* |
+| **Wallets shown as طرق الدفع on invoices**, plus the two wordings | *Settings → Companies → Invoices* page: bank accounts (`rms_payment_title`, `rms_payment_note`) |
+| Products, prices, barcodes, stock | *Retail Management → Products* (write access needs *Retail Manager*) |
+| Tax rates and "prices include tax" | *Invoicing → Configuration → Taxes* and *Settings → Taxes* |
+| Register, payment methods, receipt footer | *Retail Management → Settings* (POS configuration) |
+| Users | *Settings → Users*: give a cashier *Retail Cashier*, a manager *Retail Manager*; never *Settings*/*Administrator* |
+| Language | each user's *Preferences* (Arabic `ar_001` ships with Odoo) |
+
+No wallet number, account holder, product or price from a real shop is in this repository — those live in
+the database and are yours to fill (D-045).
+
 ## Add to an existing Odoo
 
 Copy `custom_addons/retail_management` into an add-ons path, add that path to `addons_path`, then:

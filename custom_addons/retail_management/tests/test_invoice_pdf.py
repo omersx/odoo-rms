@@ -45,6 +45,9 @@ class TestInvoicePdfAttachment(TransactionCase):
         """D-035: the report follows the *session* language, so an invoice generated outside the web
         UI would reach an Arabic customer with English labels."""
         self._skip_without_chart()
+        # A clean install has no Arabic language yet (the po file only makes it available);
+        # activate it so this test also passes on a fresh database.
+        self.env["res.lang"]._activate_lang("ar_001")
         self.partner.lang = "ar_001"
         seen = {}
 

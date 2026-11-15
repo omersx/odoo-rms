@@ -20,6 +20,15 @@ customers, invoicing at the till *and* from the back office, and the shop app is
 the trade-off that the cashier can also reach journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **Publication audit + template cleanup** (D-045) — the repo is ready to publish except the push
+  itself (owner's action, Hard stop). What was checked: 65 tracked files, no remote, `.env` and
+  `config/odoo.conf` untracked and ignored, no secrets/tokens/local paths/DB dumps in the tree, LGPL-3 licence,
+  README rewritten (22 tests, 34 files, the new features, a "customize it for your company" table). The owner's
+  real wallet numbers and holder name were in `docs/PROJECT_STATE.md` **and in history**: replaced with
+  placeholders and purged from all 58 commits with `git filter-branch` (tags kept, **every hash changed**, so
+  older hash references are stale). A clean install on a brand-new database without demo data (`rms_test5`)
+  installs 19.0.1.18.0 and passes **22 tests, 0 failed** — it also exposed a test that assumed Arabic was
+  installed, now fixed.
 - 2026-11-15: **The cashier can read stock quantities** (D-044) — *Retail Management → المخزون* is now a
   read-only on-hand list (product, location, quantity, reserved, available). No new rights were needed:
   stock already grants quant **read** to every internal user (`access_stock_quant_all`, `1,0,0,0`); the menu
@@ -266,6 +275,12 @@ the trade-off that the cashier can also reach journal entries is logged as B-001
 - 2026-11-01: Phase 0 discovery + Stage 0 environment (Docker Desktop, Odoo 19.0-20261015).
 
 ## Next action (concrete)
+**Owner:** publish it — create the empty public repo `odoo-rms` on GitHub, then (Hard stop for the agent:
+no remote, nothing pushed) either add the remote yourself or ask for it explicitly:
+`git remote add origin https://github.com/<your-account>/odoo-rms.git && git push -u origin main`.
+Before that, confirm the **branch name** is `main` and that you are happy with the rewritten history
+(D-045 — the wallet numbers are gone from every commit, and so is the pre-audit history).
+
 **Owner:** reload your open Odoo tab once with **Ctrl+Shift+R** — that is the last step for D-042 (the
 launcher now refreshes itself on every open, so it is a one-time thing). The Retail Management tile is gone
 for the admin login after that.
