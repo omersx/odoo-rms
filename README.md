@@ -78,11 +78,14 @@ odoo -d <db> -u retail_management --stop-after-init     # upgrade
 ## Tests
 
 ```bash
-# first install on a disposable database (tests run as part of the install)
-docker compose run --rm odoo odoo -d rms_test -i retail_management --test-enable --stop-after-init
-# already installed? upgrade instead
+# install on a disposable database first
+docker compose run --rm odoo odoo -d rms_test -i retail_management --stop-after-init
+# then run this module's tests (with -u, only the updated module's tests run)
 docker compose run --rm odoo odoo -d rms_test -u retail_management --test-enable --stop-after-init
 ```
+
+Do not add `--test-enable` to the `-i` line: on a fresh database Odoo then runs the tests of *every*
+installed module, including core ones that need a full build environment.
 
 They cover the access rules (cashier vs manager): refunds, negative lines, stock validation, product and
 quant writes, the menu/app list, plus invoice PDF rendering. Use a disposable database — the test run
