@@ -20,6 +20,11 @@ customers, invoicing at the till *and* from the back office, and the shop app is
 the trade-off that the cashier can also reach journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **Client onboarding runbook for agents** (D-047) — `docs/CLIENT_ONBOARDING.md`: the brief to
+  collect from the owner, the exact clone→bootstrap→install commands, the order to enter data in (company →
+  taxes → products → register → users → opening stock), a verification table, and the rule that no company
+  data is ever committed. `AGENTS.md` step 4 now sends "set up for a company" tasks there instead of to this
+  file, the README links it, and `CLIENT_NOTE.md` is git-ignored for the agent's notes.
 - 2026-11-15: **"Clone it for a client" proven end to end** (D-046) — a real fresh clone was set up as a second
   shop (project `rmsclient`, DB `rmsclient`, port 8070) with `scripts/setup.sh dev` + `scripts/bootstrap.sh dev`,
   the app installed there, and `http://localhost:8070/web/login` answered **HTTP 200** while the original stack
@@ -290,6 +295,8 @@ the token from the Windows GitHub CLI keyring, so `git push` works from WSL with
 
 **Owner:** next real work is a company customization or the production kit (`docs/DEPLOYMENT.md`, never
 verified); Milestone A acceptance (invoice one-page + wallet block, preview pane ≥1400 px) is still open.
+A company install now starts at `docs/CLIENT_ONBOARDING.md` (D-047) — give that file to the agent together
+with the company details.
 
 **Owner:** reload your open Odoo tab once with **Ctrl+Shift+R** — that is the last step for D-042 (the
 launcher now refreshes itself on every open, so it is a one-time thing). The Retail Management tile is gone

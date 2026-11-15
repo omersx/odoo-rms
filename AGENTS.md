@@ -12,6 +12,10 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
    and re-run the relevant tests. If reality differs from the state file, fix the state file and say so.
 4. Continue from "Next action". Do not redo finished work; do not restart discovery.
 
+**One exception: "set up / customize this for a company".** Then you are not developing the product — read
+`docs/CLIENT_ONBOARDING.md` and follow that instead of steps 2–4. For one company nothing in
+`custom_addons/` changes, and no company data is committed.
+
 ## Documents (one job each — never duplicate content between them)
 | File | Purpose | Who edits |
 |---|---|---|
@@ -22,6 +26,7 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
 | `docs/DECISIONS.md` | Every non-trivial decision, with alternatives and reasons | Agent (append) |
 | `docs/BACKLOG.md` | Improvement ideas and out-of-scope proposals for the owner | Agent (append) |
 | `docs/AGENT_PLAYBOOK.md` | How to debug, decide, escalate, checkpoint, report | Reference |
+| `docs/CLIENT_ONBOARDING.md` | Installing for a **client company**: the brief to collect, commands, data order, verification | Agent (it replaces the dev protocol on a client install) |
 | `docs/WINDOWS_SETUP.md`, `docs/DEPLOYMENT.md`, `docs/OPTIONAL_TOOLS.md` | Environment, deployment kit, optional tools | Reference |
 
 ## Technical invariants (never break these)

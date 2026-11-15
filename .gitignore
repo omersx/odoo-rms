@@ -9,6 +9,8 @@ backups/
 *.dump
 *.sql
 *.sql.gz
+# Per-client setup notes (docs/CLIENT_ONBOARDING.md) — client data, never committed
+CLIENT_NOTE.md
 
 # Python / editor / OS
 __pycache__/

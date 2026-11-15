@@ -57,6 +57,10 @@ share containers, volumes or port.
 
 Nothing in the add-on hardcodes a shop. Everything below is **database data**, entered once per company:
 
+> Handing this to an AI coding agent (opencode, Claude Code, …)? Give it the company details and point it
+> at [`docs/CLIENT_ONBOARDING.md`](docs/CLIENT_ONBOARDING.md): the brief to fill in, the exact commands, a
+> verification checklist, and the rules that keep client data out of Git.
+
 | What | Where |
 |---|---|
 | Company name, address, logo, document footer | *Settings → Companies* |
