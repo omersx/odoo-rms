@@ -50,9 +50,76 @@ class TestRetailSecurity(TransactionCase):
         with self.assertRaises(AccessError):
             quant.with_user(self.cashier).write({"inventory_quantity": 5})
 
-    def test_cashier_cannot_create_partner(self):
+    def test_cashier_can_create_partner(self):
+        # Owner's decision (D-039): the cashier adds customers at the till.
+        partner = self.env["res.partner"].with_user(self.cashier).create({"name": "Walk-in Customer"})
+        self.assertTrue(partner.exists())
+
+    def test_cashier_can_invoice_a_pos_order(self):
+        # Owner's decision (D-039): the cashier issues an invoice for the sale at the till.
+        # POS creates and posts the invoice through its own privileged path, so this works
+        # without giving the cashier accounting rights.
+        self.order.session_id.config_id.invoice_journal_id = self.env["account.journal"].search(
+            [("type", "=", "sale")], limit=1
+        )
+        product = self.env["product.product"].create(
+            {"name": "Invoice Probe Item", "list_price": 10.0, "available_in_pos": True, "taxes_id": [(6, 0, [])]}
+        )
+        customer = self.env["res.partner"].create({"name": "Invoice Customer"})
+        self.order.write(
+            {
+                "partner_id": customer.id,
+                "amount_total": 10.0,
+                "amount_tax": 0.0,
+                "amount_paid": 10.0,
+                "amount_return": 0.0,
+                "lines": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": product.id,
+                            "qty": 1,
+                            "price_unit": 10.0,
+                            "price_subtotal": 10.0,
+                            "price_subtotal_incl": 10.0,
+                            "tax_ids": [(6, 0, [])],
+                        },
+                    )
+                ],
+            }
+        )
+        invoice = self.order.with_user(self.cashier)._generate_pos_order_invoice()
+        self.assertEqual(invoice.move_type, "out_invoice")
+        self.assertEqual(invoice.state, "posted")
+        self.assertEqual(invoice.partner_id, customer)
+        self.assertEqual(invoice.amount_total, 10.0)
+
+    def test_cashier_cannot_create_invoice_in_backoffice(self):
+        """Invoicing at the till yes, bookkeeping rights no (D-039)."""
+        customer = self.env["res.partner"].create({"name": "Backoffice Customer"})
         with self.assertRaises(AccessError):
-            self.env["res.partner"].with_user(self.cashier).create({"name": "Nope"})
+            self.env["account.move"].with_user(self.cashier).create(
+                {"move_type": "out_invoice", "partner_id": customer.id}
+            )
+
+    def test_cashier_cannot_read_journal_entries(self):
+        """Invoicing rights must not open the books (D-039)."""
+        account_in = self.env["account.account"].search([("account_type", "=", "income")], limit=1)
+        account_out = self.env["account.account"].search(
+            [("account_type", "=", "asset_current")], limit=1
+        )
+        entry = self.env["account.move"].create(
+            {
+                "move_type": "entry",
+                "line_ids": [
+                    (0, 0, {"name": "probe in", "account_id": account_out.id, "debit": 1.0}),
+                    (0, 0, {"name": "probe out", "account_id": account_in.id, "credit": 1.0}),
+                ],
+            }
+        )
+        with self.assertRaises(AccessError):
+            entry.with_user(self.cashier).read(["name"])
 
     def test_cashier_cannot_refund_line(self):
         with self.assertRaises(AccessError):
