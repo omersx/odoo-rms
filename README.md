@@ -4,7 +4,7 @@ A thin, opinionated retail layer on top of **native Odoo 19 Community**: two rol
 launcher, server-side guards for refunds and stock moves, and POS screens that survive a busy counter.
 
 Not a fork of Odoo. Not a new POS, stock or accounting engine. One small add-on
-(`custom_addons/retail_management`, ~10 files, 14 automated tests) and **no changes to Odoo core**.
+(`custom_addons/retail_management`, 34 files, 22 automated tests) and **no changes to Odoo core**.
 
 ## What it adds over stock Odoo
 
@@ -13,13 +13,16 @@ Not a fork of Odoo. Not a new POS, stock or accounting engine. One small add-on
 | 1 | **Two roles** — Retail Cashier, Retail Manager — mapped onto native Odoo permission groups | `security/retail_security.xml` |
 | 2 | **Refunds are manager-only**, enforced on the server (order and negative-quantity lines, so POS sync and RPC are covered) | `models/pos_order.py` |
 | 3 | **Stock receipts/moves are manager-only** | `models/stock_picking.py` |
-| 4 | One **Retail Management** app with 6 screens instead of Odoo's full app tree | `views/retail_menu.xml` |
-| 5 | Full-page **icon launcher** (search + tiles), opened from the navbar Apps button | `static/src/apps_page/` |
+| 4 | One **Retail Management** app with the shop's screens — POS, products, inventory, invoicing, customers, settings — instead of Odoo's full app tree | `views/retail_menu.xml` |
+| 5 | Full-page **icon launcher** (search + tiles), opened from the navbar Apps button; it re-reads the menus on open, so a menu you hide server-side stops showing a tile | `static/src/apps_page/` |
 | 6 | **Installable as an app** (PWA): own icon and name, opens full screen | `static/description/icon.svg` |
 | 7 | POS **payment screen**: methods in two columns, full-size icons, due total clamped for long amounts | `static/src/pos/payment_methods.scss` |
 | 8 | **Receipt prints the QR only** — no portal URL, no short code | `static/src/pos/receipt.scss` |
 | 9 | Payment icons stored at 256 px instead of Odoo's 50 px cap | `models/pos_payment_method.py` |
 | 10 | **Camera Scan button + beep** on the product form's Barcode field | `static/src/fields/barcode_scan_field.*` |
+| 11 | **Cashier workspace**: a two-tile app list (the shop app + Dashboards), Arabic labels, and a **read-only on-hand stock** screen (no new rights: quants are readable by any internal user, writable by nobody but stock users) | `security/retail_security.xml`, `data/hide_apps.xml`, `i18n/ar_001.po`, `views/stock_quant_readonly.xml` |
+| 12 | Invoice **طرق الدفع** block built from the company's bank accounts, an `اسم العميل` heading, and `باستخدام <wallet>` on a paid invoice | `views/report_invoice.xml`, `views/company_bank_accounts.xml` |
+| 13 | Invoice PDF **fits one A4 page**, is rendered in the **customer's language**, and is stored at posting — so the portal shows the real invoice, never a proforma | `models/account_move.py` |
 
 ## What it deliberately does not do
 
@@ -37,7 +40,7 @@ Not a fork of Odoo. Not a new POS, stock or accounting engine. One small add-on
 ## Quick start (development)
 
 ```bash
-git clone <this-repo> ~/rms && cd ~/rms
+git clone https://github.com/<your-account>/odoo-rms.git ~/rms && cd ~/rms
 scripts/bootstrap.sh dev        # preflight, .env + config with random secrets, DB, Odoo up
 docker compose run --rm odoo odoo -d rms -i retail_management --stop-after-init
 docker compose restart odoo
@@ -58,11 +61,15 @@ odoo -d <db> -u retail_management --stop-after-init     # upgrade
 ## Tests
 
 ```bash
-docker compose run --rm odoo odoo -d rms_test -i retail_management --test-tags /retail_management --stop-after-init
+# first install on a disposable database (tests run as part of the install)
+docker compose run --rm odoo odoo -d rms_test -i retail_management --test-enable --stop-after-init
+# already installed? upgrade instead
+docker compose run --rm odoo odoo -d rms_test -u retail_management --test-enable --stop-after-init
 ```
 
-They cover the access rules (cashier vs manager): refunds, negative lines, stock validation, and the
-group mapping. Use a disposable database — the test run creates and deletes POS orders.
+They cover the access rules (cashier vs manager): refunds, negative lines, stock validation, product and
+quant writes, the menu/app list, plus invoice PDF rendering. Use a disposable database — the test run
+creates and deletes POS orders.
 
 ## Repository layout
 
@@ -106,8 +113,10 @@ Copyright (C) 2026 odoo-rms contributors.
 
 ## Project status
 
-Working and tested on Odoo 19.0 Community, but early: the retail core (roles, guards, POS screens,
-launcher) is in place; invoicing-from-POS, simple customer management and reports come next. The
-`docs/` folder is the live working memory of the project, so it contains the maintainers' roadmap,
-decision log and current state rather than polished user documentation. Nothing here has been used in
-production yet — try it on a disposable database first.
+Working and tested on Odoo 19.0 Community, verified on a clean install with no demo data. The retail core
+(roles, guards, POS screens, launcher), the cashier workspace (customers, invoicing at the till and in the
+back office, read-only stock) and the printable documents (receipt QR, one-page invoice with the payment
+block) are in place; reports and a customer dashboard come next. The `docs/` folder is the live working
+memory of the project, so it contains the maintainers' roadmap, decision log and current state rather than
+polished user documentation. Nothing here has been used in production yet — try it on a disposable database
+first, change the default passwords, and enter your own company, products, wallets and tax figures.

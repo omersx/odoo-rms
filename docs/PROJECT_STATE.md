@@ -135,8 +135,8 @@ the trade-off that the cashier can also reach journal entries is logged as B-001
   Data lives in the database, not in code; `views/company_bank_accounts.xml` adds the **Invoices** page
   to the company form (bank accounts + the two wordings `rms_payment_title` / `rms_payment_note`) so
   nothing needs a code edit. Verified by rendering invoice 1 of `rms_test4` (styled HTML) and invoice
-  28 of `rms` (styled HTML). The owner has since entered the real wallets on `rms`
-  (`بنكك` 00000000, `فوري` 00000000, holder `اسم صاحب الحساب`), so `rms` prints all of it. Also on
+  28 of `rms` (styled HTML). The owner has since entered the real wallets on `rms`, so `rms` prints all of it
+  (the numbers stay in the database, never in the repo). Also on
   2026-11-14: the POS "Save as PDF" button was removed
   (D-028 reversed, owner's call) and the receipt print CSS was reduced to `@page { margin: 0 }` so
   the browser header/footer stay hidden without moving the ticket (D-029).
