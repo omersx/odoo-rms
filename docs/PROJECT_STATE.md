@@ -20,6 +20,15 @@ customers, invoicing at the till *and* from the back office, and the shop app is
 the trade-off that the cashier can also reach journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **The launcher refreshes its menus when it opens** (D-042) — the owner still saw the Retail
+  Management tile on the admin login after D-041 even though the server was already clean (`load_menus` for a
+  fresh system user: *Settings, Apps, Invoicing, Dashboards, Point of Sale*, no Retail entry; cashier still has
+  menu 268). Cause: core caches menus in the browser (`webclient_menus` in localStorage keyed by
+  `session.registry_hash`), so an already-open tab keeps the old list. `static/src/apps_page/apps_page.js` now
+  calls `this.menu.reload()` on mount and re-renders on `MENUS:APP-CHANGED`. Verified on `rms`: probe system
+  user's launcher = *Dashboards, Point of Sale, Invoicing, Apps, Settings* (no Retail Management), cashier =
+  *لوحات البيانات, Retail Management*, no console errors. Module 19.0.1.15.0; probe user deleted; the owner
+  still needs one **Ctrl+Shift+R** to load the new JS. Tests: 21, 0 failed.
 - 2026-11-15: **The admin login no longer sees Retail Management** (D-041, owner's call) — the shop app is
   restricted to *Retail Cashier* (a manager inherits it), and the native apps — standalone *Point of Sale*,
   *Invoicing*, *Apps*, *Tests* — are now restricted to the Odoo administrator (`base.group_system`) instead
@@ -244,6 +253,10 @@ the trade-off that the cashier can also reach journal entries is logged as B-001
 - 2026-11-01: Phase 0 discovery + Stage 0 environment (Docker Desktop, Odoo 19.0-20261015).
 
 ## Next action (concrete)
+**Owner:** reload your open Odoo tab once with **Ctrl+Shift+R** — that is the last step for D-042 (the
+launcher now refreshes itself on every open, so it is a one-time thing). The Retail Management tile is gone
+for the admin login after that.
+
 **Owner:** open (or download) `INV/2026/00005` — it is one page now, and the payment block sits at the
 bottom of it. Tell me if the tighter wallet block is too small on paper (`views/report_invoice.xml`,
 `font-size: 0.9em; line-height: 1.25`).
@@ -264,8 +277,7 @@ product barcode in front of the webcam — the field fills with the digits (noth
 **After approval**, Milestone B starts with invoicing from POS and the Customers/CRM screens.
 
 ## In-flight / uncommitted work
-None. (`dbfilter = ^rms$` was temporarily added to `config/odoo.conf` to render the styled PDFs without a
-session cookie; it must be removed again — see "Next action".)
+None.
 
 ## Blockers and questions for the owner
 1. **Milestone A gate**: accept the working core or list changes.
@@ -291,8 +303,9 @@ session cookie; it must be removed again — see "Next action".)
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
   trust-on-the-cashier · D-022 camera Scan button on the product Barcode field · D-023 low-stock reordering rules · D-024 Arabic (ar_001).
-  D-025…D-041 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights)
-  are listed in `DECISIONS.md`; D-038…D-041 are the ones to read for the cashier and the app list.
+  D-025…D-042 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights,
+  launcher menu refresh) are listed in `DECISIONS.md`; D-038…D-042 are the ones to read for the cashier and the
+  app list.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only

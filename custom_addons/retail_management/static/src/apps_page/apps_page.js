@@ -1,6 +1,6 @@
 import { Component, onMounted, useRef, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
-import { useService } from "@web/core/utils/hooks";
+import { useBus, useService } from "@web/core/utils/hooks";
 import { standardActionServiceProps } from "@web/webclient/actions/action_service";
 
 /**
@@ -16,7 +16,13 @@ export class AppsPage extends Component {
         this.menu = useService("menu");
         this.state = useState({ search: "" });
         this.searchInput = useRef("search");
-        onMounted(() => this.searchInput.el?.focus());
+        // Menus are cached in the browser (menu service + localStorage); refresh on open and
+        // re-render when they change, so a menu hidden server-side stops showing a tile here.
+        useBus(this.env.bus, "MENUS:APP-CHANGED", () => this.render());
+        onMounted(() => {
+            this.searchInput.el?.focus();
+            this.menu.reload();
+        });
     }
 
     get apps() {
