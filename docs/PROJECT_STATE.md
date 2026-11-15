@@ -18,6 +18,15 @@ The owner is currently reviewing the printed documents and the invoice form (the
 D-037, still needs his confirmation at ≥ 1400 px window width).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **Cashier account created and his app list trimmed** (D-038) — login `cashier` / password
+  `cashier` (placeholder, Arabic UI, group *Retail Cashier*: internal user + POS user only). His app list is
+  **Retail Management + Dashboards**: the standalone Point of Sale app, Apps and Tests are now
+  manager-only (`data/hide_apps.xml`); he still opens the till from Retail Management → Point of Sale,
+  which lands directly on the POS dashboard (`Main Register`, `متابعة البيع`). Verified in a real session as
+  `cashier` on `rms`: two tiles on the launcher, POS dashboard opens, and product/stock/company writes are
+  denied by ACLs. Two gaps found and logged in `BACKLOG.md`: he can still *read* invoices and user records
+  (B-001), and the Dashboards app is empty for him because both dashboards are Invoicing/Administrator-only
+  (B-002). Tests: 18, 0 failed (new: menu groups are manager-only).
 - 2026-11-15: **The invoice preview pane can be collapsed** (D-037) — the owner kept the document preview
   but asked for a way to close/expand it, and Odoo 19 has no such control (mail's black pill *pops the pane
   out to another window*; pdf.js's `»` only opens its own toolbar). `static/src/views/preview_collapse.js`

@@ -17,4 +17,21 @@
         <value eval="[ref('contacts.menu_contacts')]"/>
         <value eval="{'group_ids': [(6, 0, [ref('group_no_discuss')])]}"/>
     </function>
+
+    <!-- A cashier's app list is Retail Management + Dashboards only (owner's request, D-038).
+         The standalone Point of Sale app, Apps and Tests are manager-only; the cashier still
+         opens the till from Retail Management → Point of Sale. Menus are cosmetic, POS rights
+         are untouched. -->
+    <function model="ir.ui.menu" name="write">
+        <value eval="[ref('point_of_sale.menu_point_root')]"/>
+        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+    </function>
+    <function model="ir.ui.menu" name="write">
+        <value eval="[ref('base.menu_management')]"/>
+        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+    </function>
+    <function model="ir.ui.menu" name="write">
+        <value eval="[ref('base.menu_tests')]"/>
+        <value eval="{'group_ids': [(6, 0, [ref('retail_management.group_retail_manager')])]}"/>
+    </function>
 </odoo>

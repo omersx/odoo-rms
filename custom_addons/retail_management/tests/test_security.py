@@ -167,3 +167,13 @@ class TestRetailSecurity(TransactionCase):
         )
         self.assertEqual(line.qty, -1)
         self.order._refund()
+
+    # --- app list (D-038) --------------------------------------------------
+    def test_cashier_app_list_is_manager_only_for_technical_apps(self):
+        """The cashier's app list is Retail Management + Dashboards (data/hide_apps.xml)."""
+        manager_group = self.env.ref("retail_management.group_retail_manager")
+        self.assertNotIn(manager_group, self.cashier.group_ids)
+        for xmlid in ("point_of_sale.menu_point_root", "base.menu_management", "base.menu_tests"):
+            menu = self.env.ref(xmlid, raise_if_not_found=False)
+            if menu:
+                self.assertEqual(menu.group_ids, manager_group, f"{xmlid} must be manager-only")
