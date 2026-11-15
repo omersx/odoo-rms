@@ -29,6 +29,22 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
 | `docs/CLIENT_ONBOARDING.md` | Installing for a **client company**: the brief to collect, commands, data order, verification | Agent (it replaces the dev protocol on a client install) |
 | `docs/WINDOWS_SETUP.md`, `docs/DEPLOYMENT.md`, `docs/OPTIONAL_TOOLS.md` | Environment, deployment kit, optional tools | Reference |
 
+## Running it (verified commands; the *state* is in `PROJECT_STATE.md`, not here)
+
+- Project `~/rms` in WSL Ubuntu — run the stack there, never from `/mnt/c`. Dev URL
+  `http://localhost:8069` · `docker compose up -d` · logs `docker compose logs -f odoo`.
+- Odoo 19.0 · PostgreSQL 16 · Python 3.12. Dev DB `rms`, disposable DBs `rms_test*`: drop only databases you
+  created, and never `docker compose down -v`.
+- Install/upgrade:
+  `docker compose run --rm odoo odoo -d <db> -i retail_management --without-demo --stop-after-init`
+- Tests — the only command verified green (22 tests, 0 failed):
+  `docker compose exec -T odoo sh -c 'odoo -c /etc/odoo/odoo.conf -d rms_test4 -u retail_management --test-enable --stop-after-init --http-port=8799'`
+  Never add `--test-enable` to an `-i` on a fresh database: Odoo then runs every core test and hangs.
+- Restart `odoo` after changing Python, XML or `i18n/`: menus and translations are cached per worker.
+- Dev logins: `admin` (Odoo administrator) and `cashier` / `cashier` (Retail Cashier). Change both before a
+  real shop uses the install.
+- Versions, evidence and design: `docs/ARCHITECTURE.md` §2.
+
 ## Technical invariants (never break these)
 1. **Never modify Odoo core.** Custom code lives in custom add-ons.
 2. **Verify, never assume** model names, fields, XML IDs, groups, APIs, dependencies in the Odoo 19
@@ -44,6 +60,9 @@ over time, so **memory lives in files and Git, not in your context** (see "Memor
 8. **Nothing works until tested** on the target build. Reports separate verified from assumed. No offline
    claims beyond what was tested.
 9. **Do not invent** tool names, skills, commands, integrations.
+10. **This repository is a reusable, public template.** Not just secrets: no client's business data —
+    wallet numbers, account-holder names, prices, products, `.env`, `backups/`, dumps — is committed, in code,
+    docs or history. A company's data lives in its database only (`docs/CLIENT_ONBOARDING.md`).
 
 ## Autonomy — you own HOW, the owner owns WHAT
 Think like a senior engineer who owns the outcome: analyze, decide, act, record. Do not ask permission
