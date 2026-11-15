@@ -1,0 +1,51 @@
+# Arabic translation of the retail_management module.
+# It translates the shop's own labels — the app name, the buttons inside it and the launcher
+# action — so the cashier's Arabic UI has no English left in the navbar (D-043).
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. module: retail_management
+#: model:ir.ui.menu,name:retail_management.menu_retail_root
+msgid "Retail Management"
+msgstr "إدارة البيع"
+
+#. module: retail_management
+#: model:ir.ui.menu,name:retail_management.menu_retail_pos
+msgid "Point of Sale"
+msgstr "نقطة البيع"
+
+#. module: retail_management
+#: model:ir.ui.menu,name:retail_management.menu_retail_products
+msgid "Products"
+msgstr "المنتجات"
+
+#. module: retail_management
+#: model:ir.ui.menu,name:retail_management.menu_retail_inventory
+msgid "Inventory"
+msgstr "المخزون"
+
+#. module: retail_management
+#: model:ir.ui.menu,name:retail_management.menu_retail_invoicing
+msgid "Invoicing"
+msgstr "الفوترة"
+
+#. module: retail_management
+#: model:ir.ui.menu,name:retail_management.menu_retail_customers
+msgid "Customers"
+msgstr "العملاء"
+
+#. module: retail_management
+#: model:ir.ui.menu,name:retail_management.menu_retail_settings
+msgid "Settings"
+msgstr "الإعدادات"
+
+#. module: retail_management
+#: model:ir.actions.client,name:retail_management.action_apps_page
+msgid "Apps"
+msgstr "التطبيقات"

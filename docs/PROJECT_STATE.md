@@ -20,6 +20,12 @@ customers, invoicing at the till *and* from the back office, and the shop app is
 the trade-off that the cashier can also reach journal entries is logged as B-001).
 
 ## Last completed (newest first, max 8)
+- 2026-11-15: **The shop app speaks Arabic** (D-043) — new `i18n/ar_001.po` translates our own labels, which
+  were the only English left in the cashier's navbar: *إدارة البيع*, *نقطة البيع*, *المنتجات*, *المخزون*,
+  *الفوترة*, *العملاء*, *الإعدادات*, launcher *التطبيقات*. Server-side names verified with `lang=ar_001` on
+  `rms`; in the cashier's browser the tile reads *إدارة البيع* and `load_menus` returns Arabic only. Module
+  19.0.1.17.0, both DBs upgraded, `odoo` restarted (translations are cached per worker). Tests: 21, 0 failed.
+  English left in the launcher itself ("Search apps…", empty-state text) — Owl templates, logged in D-043.
 - 2026-11-15: **The launcher refreshes its menus when it opens** (D-042) — the owner still saw the Retail
   Management tile on the admin login after D-041 even though the server was already clean (`load_menus` for a
   fresh system user: *Settings, Apps, Invoicing, Dashboards, Point of Sale*, no Retail entry; cashier still has
@@ -303,9 +309,9 @@ None.
   D-014 full-page app launcher (supersedes D-013) · D-015 Sudan / SDG / 0% included taxes ·
   D-016 cash-difference guard 10,000 SDG · D-017 four wallet payment methods · D-018 wallet payments are
   trust-on-the-cashier · D-022 camera Scan button on the product Barcode field · D-023 low-stock reordering rules · D-024 Arabic (ar_001).
-  D-025…D-042 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights,
-  launcher menu refresh) are listed in `DECISIONS.md`; D-038…D-042 are the ones to read for the cashier and the
-  app list.
+  D-025…D-043 (PWA install, merge/workflow choices, invoice layout, preview pane, cashier account and rights,
+  launcher menu refresh, Arabic labels) are listed in `DECISIONS.md`; D-038…D-043 are the ones to read for the
+  cashier and the app list.
 
 ## Environment quick facts (full detail: `ARCHITECTURE.md` §2)
 - Project: `~/rms` in WSL Ubuntu 24.04 · Windows copy is a backup only
