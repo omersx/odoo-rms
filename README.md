@@ -146,7 +146,9 @@ Copyright (C) 2026 odoo-rms contributors.
 Working and tested on Odoo 19.0 Community, verified on a clean install with no demo data. The retail core
 (roles, guards, POS screens, launcher), the cashier workspace (customers, invoicing at the till and in the
 back office, read-only stock) and the printable documents (receipt QR, one-page invoice with the payment
-block) are in place; reports and a customer dashboard come next. The `docs/` folder is the live working
-memory of the project, so it contains the maintainers' roadmap, decision log and current state rather than
-polished user documentation. Nothing here has been used in production yet — try it on a disposable database
-first, change the default passwords, and enter your own company, products, wallets and tax figures.
+block) are in place. **Not built:** reports and a customer dashboard (proposed as B-002 in
+`docs/BACKLOG.md`); development is paused after Milestone A at the owner's request. The `docs/` folder is the
+live working memory of the project, so it contains the maintainers' roadmap, decision log and current state
+rather than polished user documentation. Nothing here has been used in production yet — try it on a
+disposable database first, change the default passwords, and enter your own company, products, wallets and
+tax figures.

@@ -1,7 +1,9 @@
 # RMS Development Roadmap
 
 **Platform:** Odoo 19 Community Edition
-**Current status:** Phase 0 not started
+**Current status:** phases 0–4 done and verified; Milestone A implemented and **development paused at the
+owner's request (2026-11-15)**. Milestone B (reports, customer dashboard) is **not started** — the dashboard
+idea is B-002 in `BACKLOG.md`. A new company is onboarded with data only (`docs/CLIENT_ONBOARDING.md`).
 
 Scope and requirement IDs are in `RETAIL_MANAGEMENT_SPEC.md`; technical facts in `ARCHITECTURE.md`.
 
